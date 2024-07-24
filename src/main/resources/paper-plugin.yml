@@ -1,0 +1,4 @@
+name: kz_survivor
+version: '0'
+main: com.cludivers.kz_survivor.KzSurvivor
+api-version: '1.21'
