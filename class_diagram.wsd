@@ -1,0 +1,164 @@
+@startuml
+class "@Entity SurvivorMap" as SurvivorMap {
+    owner: UUID @UserEditable
+    Builders: List<UUID> @UserEditable
+    connectedBuilders: List<Player> @Transient
+    maxMapElements: Set<Class<?>> 
+    maxPlayers: int @UserEditable
+    connectedPlayers: List<Player> @Transient
+    + start()
+    + end()
+    + playerJoin(player: Player)
+    + playerLeft(player: Player)
+    + builderJoin(player: Player)
+    + builderLeft(player: Player)
+}
+
+
+class "@Entity SurvivorWorld" as SurvivorWorld {
+    + worldData: BLOB
+    + @Transient\nplayWorld: World
+    + save()
+    + load()
+}
+class "@Entity MapSector" as MapSector
+class "@Entity CreatureSpawner" as CreatureSpawner {
+    + @EditableAttribute\n@Converter\nlocation: Location 
+}
+class "@Entity GameItem" as GameItem {
+    + @EditableAttribute\n@Converter\nitemStack: ItemStack
+}
+
+class "@Entity SectorDoor" as SectorDoor {
+    + open()
+}
+class "@Entity DoorFragment" as DoorFragment {
+    + @EditableAttribute\n@Converter\nlocationA: Location 
+    + @EditableAttribute\n@Converter\nlocationB: Location 
+    + replacingBlock: Material
+    + open()
+}
+abstract "@Entity Buyable" as Buyable {
+    + @EditableAttribute\n@Converter\nlocation: Location
+    + @EditableAttribute\nprice: int
+    + @EditableAttribute\nprice: availableAmount
+    - @Transient\ncurrentAmountBought: int
+    - @Transient\nremainingPrice: int
+    - @Transient\ntextInstance: Entity
+    + buy()
+    + disable()
+}
+
+class "@Entity CustomMob" as CustomMob {
+    + type: EntityType
+    + spawn()
+}
+class "@Entity Wave" as Wave {
+    + mobsAmount: int
+    + getMob(): CustomMob
+}
+class "@Entity WaveManager" as WaveManager {
+    - @Transient\naliveMobs: int
+    - @Transient\nremainingMobsToSpawn: int
+    + infinite: Boolean
+    + @Transient\ncurrentWave: int
+    + startWave()
+    + addSpawns(section: Section)
+}
+
+class "@Entity CustomItems" as CustomItems {
+    + @EditableAttribute\n@Converter\nitemStack: ItemStack
+}
+
+class "@Entity MapStatistics" as MapStatistics {
+    + timePlayed: int
+    + monsterBeaten: int
+    + maxWaveReached: int
+}
+
+class "@Entity PlayerBuildData" as PlayerBuildData 
+enum BuildNotifications {
+    PLAYER_CONNECTIONS
+    MAP_CONFIG_EDITION
+}
+enum BuildPermissions {
+    EDIT_WORLD
+    EDIT_MAP_CONFIG
+    INVITE_BUILDERS
+    MANAGE_PERMISSION
+}
+
+class "@Embed CustomIcon" as CustomIcon {
+    + @EditableAttribute\nname: String
+    + @EditableAttribute\ndescription: String
+    + @EditableAttribute\nicon: Material
+}
+
+
+abstract Activable {
+    + @Transient\nisActive: Boolean
+    + activate()
+}
+
+abstract Validable {
+    + validate(String: parentPath): List<MapCondition>
+    - abstract checkConditions(): void
+}
+enum ConditionLevel {
+    ERROR
+    WARNING
+}
+class MapCondition {
+    + message: String
+    + test: BooleanSupplier
+}
+
+interface UserEditable {
+    + triggerEdition(arg: EditableArgument)
+    + getIcon(): CustomIcon
+    + getMenuComponent(): MenuComponent
+}
+
+class EditableArgument {
+    + player: Player
+}
+annotation EditableAttribute {
+    action: Runnable
+}
+
+interface Child {
+    + getChildren(): List<Child>
+}
+
+abstract MenuComponent {
+    + forceNewLine: Boolean
+    + size: int
+    + contentFetcher: Supplier<MenuComponent>
+    - interactiveContent: Map<Int, MenuComponent>
+    abstract drawContent
+}
+class SingleComponent
+class ScrollMenu
+class ChoiceMenu
+class ValidationMenu
+
+class MenuDisplayer
+class SurvivorMenuHandler
+interface Listener
+
+class PlayerSurvivorExtension
+
+SurvivorMap --|> Validable
+SurvivorMap --|> UserEditable
+SurvivorMap --> "world\n1" SurvivorWorld  
+SurvivorMap --> "@EditableAttribute\nsectors\n*" MapSector
+SurvivorMap --> "@EditableAttribute\nstartingSector\n1" MapSector 
+SurvivorMap --> "icon\n1" CustomIcon
+
+MapSector --|> Activable
+MapSector --> "activables\n*" Activable 
+
+
+
+
+@enduml
