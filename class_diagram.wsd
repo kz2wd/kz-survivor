@@ -113,6 +113,8 @@ class MapCondition {
     + test: BooleanSupplier
 }
 
+interface BooleanSupplier
+
 interface UserEditable {
     + triggerEdition(arg: EditableArgument)
     + getIcon(): CustomIcon
@@ -135,30 +137,103 @@ abstract MenuComponent {
     + size: int
     + contentFetcher: Supplier<MenuComponent>
     - interactiveContent: Map<Int, MenuComponent>
-    abstract drawContent
+    + abstract drawContent()
+    + update()
+    + onClick(index: int)
+
 }
-class SingleComponent
+class SingleComponent {
+    onClick: Runnable
+    ctr(UserEditable)
+}
 class ScrollMenu
 class ChoiceMenu
 class ValidationMenu
 
-class MenuDisplayer
-class SurvivorMenuHandler
+class MenuDisplayer {
+    + player: Player
+    + inventory: Inventory
+    + open()
+    + close()
+    + update()
+    + onClick(index: int)
+}
+class SurvivorMenuHandler {
+    + onMenuOpen()
+    + onMenuClick()
+}
 interface Listener
 
 class PlayerSurvivorExtension
 
 SurvivorMap --|> Validable
-SurvivorMap --|> UserEditable
+SurvivorMap ..|> UserEditable
 SurvivorMap --> "world\n1" SurvivorWorld  
 SurvivorMap --> "@EditableAttribute\nsectors\n*" MapSector
 SurvivorMap --> "@EditableAttribute\nstartingSector\n1" MapSector 
 SurvivorMap --> "icon\n1" CustomIcon
 
 MapSector --|> Activable
-MapSector --> "activables\n*" Activable 
+MapSector ..|> UserEditable
+MapSector --> "activables\n*" Activable
+MapSector --> "icon\n1" CustomIcon
 
+CreatureSpawner ..|> UserEditable
+CreatureSpawner --> Activable
 
+GameItem --|> Buyable
+
+SectorDoor --|> Buyable
+SectorDoor --> "fragment\n*" DoorFragment
+SectorDoor --> "openingSector\n1" MapSector
+
+DoorFragment --|> Validable
+DoorFragment ..|> UserEditable
+
+Buyable --|> Activable
+Buyable ..|> UserEditable
+Buyable --> "icon\n1" CustomIcon
+
+Wave --> "mobPool\n*" CustomMob
+
+WaveManager --> "waves\n*" Wave
+WaveManager --> "@Transient\nactivatedSpawns\n*" CreatureSpawner
+
+PlayerBuildData --> "permissions\n*" BuildPermissions
+PlayerBuildData --> "notifications\n*" BuildNotifications
+
+CustomIcon ..|> UserEditable
+
+Activable --|> Validable
+
+Validable ..|> Child
+Validable --> "conditions\n*" MapCondition
+
+MapCondition ..|> BooleanSupplier
+
+UserEditable ..|> Child
+
+EditableArgument --> "map\n1" SurvivorMap
+
+EditableAttribute --> "icon\n1" CustomIcon
+
+SingleComponent --|> MenuComponent
+SingleComponent --> "icon\n1" CustomIcon
+
+ScrollMenu --|> MenuComponent
+ScrollMenu --> "content\n*" MenuComponent
+
+ChoiceMenu --|> MenuComponent
+ChoiceMenu --> "choices\n*" MenuComponent
+
+ValidationMenu --|> MenuComponent
+
+MenuDisplayer --> "mainComponent\n1" MenuComponent
+
+SurvivorMenuHandler ..|> Listener
+SurvivorMenuHandler --> "static\nmenus\n*" MenuDisplayer
+
+ 
 
 
 @enduml
