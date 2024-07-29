@@ -1,4 +1,4 @@
 package com.cludivers.prototyping
 
-abstract XPlayable {
+abstract class XPlayable {
 }

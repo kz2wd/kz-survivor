@@ -173,11 +173,11 @@ enum ConditionLevel {
     ERROR
     WARNING
 }
-class MapCondition {
+abstract MapCondition {
     + concernedElement: String
     + message: String
-    + test: BooleanSupplier
     + suggeredFix: Runnable
+    + fixMessage: String
 }
 
 interface BooleanSupplier
@@ -193,10 +193,6 @@ class EditableArgument {
 }
 annotation EditableAttribute {
     action: Runnable
-}
-
-interface Child {
-    + getChildren(): List<Child>
 }
 
 abstract MenuComponent {
@@ -242,9 +238,11 @@ abstract SBuildable {
     # abstract generateDraftInstance(): SPlayable
     + getSPlayableDraftInstance(): SPlayable
     + abstract getFinalSPlayable(): SPlayable
+    + abstract getChildren(): List<SBuildable>
 }
 
-abstract SPlayable
+abstract SPlayable {
+}
 
 SurvivorMapBuild --|> SBuildable
 SurvivorMapBuild ..|> UserEditable
@@ -311,8 +309,6 @@ CustomIconBuild ..|> UserEditable
 CustomIconPlay --|> SPlayable
 
 Activable --|> SPlayable
-Activable ..|> Child
-
 
 SBuildable --> "conditions\n*" MapCondition
 

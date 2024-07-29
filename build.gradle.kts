@@ -2,6 +2,8 @@ plugins {
     kotlin("jvm") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.hibernate.orm") version "7.0.0.Alpha3"
+    id("com.google.devtools.ksp") version "2.0.0-1.0.23"
+    application
 }
 
 group = "com.cludivers"
@@ -20,6 +22,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("com.google.dagger:dagger-compiler:2.51.1")
+    ksp("com.google.dagger:dagger-compiler:2.51.1")
 }
 
 val targetJavaVersion = 22
@@ -38,4 +42,8 @@ tasks.processResources {
     filesMatching("paper-plugin.yml") {
         expand(props)
     }
+}
+
+application {
+    mainClass.set("com.cludivers.prototyping.PrototypingKt")
 }

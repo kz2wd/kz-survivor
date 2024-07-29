@@ -109,8 +109,10 @@ enum ConditionLevel {
     WARNING
 }
 class MapCondition {
+    + concernedElement: String
     + message: String
     + test: BooleanSupplier
+    + suggeredFix: Runnable
 }
 
 interface BooleanSupplier
@@ -210,6 +212,7 @@ Validable ..|> Child
 Validable --> "conditions\n*" MapCondition
 
 MapCondition ..|> BooleanSupplier
+MapCondition --> "level\n1" ConditionLevel
 
 UserEditable ..|> Child
 
