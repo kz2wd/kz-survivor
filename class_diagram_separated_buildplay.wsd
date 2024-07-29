@@ -1,0 +1,348 @@
+@startuml
+class "@Entity SurvivorMapBuild" as SurvivorMapBuild {
+    owner: UUID @UserEditable
+    maxMapElements: Set<Class<?>> 
+    maxPlayers: int @UserEditable
+    + delete()
+    + addSection()
+    + addCustomItem()
+}
+
+class SurvivorMapPlay {
+    maxPlayers: int
+    connectedPlayers: List<Player>
+    + start()
+    + end()
+    + playerJoin(player: Player)
+    + playerLeft(player: Player)
+}
+
+
+class "@Entity SurvivorWorld" as SurvivorWorld {
+    + worldData: BLOB
+    + @Transient\nplayWorld: World
+    + save()
+    + load()
+}
+class "@Entity MapSectorBuild" as MapSectorBuild {
+    + addSpawn()
+    + addDoor()
+    + addItem()
+    + delete()
+}
+class MapSectorPlay {
+    + addSpawns: Consumer<List<CreatureSpawnPlay>>
+}
+
+class "@Entity CreatureSpawnerBuild" as CreatureSpawnerBuild {
+    + @EditableAttribute\n@Converter\nlocation: Location 
+}
+class CreatureSpawnerPlay {
+    + location: Location 
+}
+class "@Entity GameItemBuild" as GameItemBuild {
+    + @EditableAttribute\n@Converter\nitemStack: ItemStack
+}
+class GameItemPlay {
+    + itemStack: ItemStack
+}
+
+class "@Entity SectorDoorBuild" as SectorDoorBuild {
+    + addFragment()
+}
+
+class SectorDoorPlay  {
+    + open()
+}
+
+class "@Entity DoorFragmentBuild" as DoorFragmentBuild {
+    + @EditableAttribute\n@Converter\nlocationA: Location 
+    + @EditableAttribute\n@Converter\nlocationB: Location 
+    + replacingBlock: Material
+}
+
+class DoorFragmentPlay {
+    + locationA: Location 
+    + locationB: Location 
+    + replacingBlock: Material
+    + open()
+}
+abstract "@Entity BuyableBuild" as BuyableBuild {
+    + @EditableAttribute\n@Converter\nlocation: Location
+    + @EditableAttribute\nprice: int
+    + @EditableAttribute\nprice: availableAmount
+}
+abstract BuyablePlay {
+    + location: Location
+    + price: int
+    + price: availableAmount
+    - currentAmountBought: int
+    - remainingPrice: int
+    - textInstance: Entity
+    + buy()
+    + disable()
+}
+
+class "@Entity CustomMobBuild" as CustomMobBuild {
+    + type: EntityType
+}
+class CustomMobPlay {
+    + type: EntityType
+    + spawn()
+}
+class "@Entity WaveBuild" as WaveBuild {
+    + mobsAmount: int
+}
+class WavePlay {
+    + mobsAmount: int
+    + getMob(): CustomMob
+}
+class "@Entity WaveManagerBuild" as WaveManagerBuild {
+    + infinite: Boolean
+}
+class WaveManagerPlay {
+    - aliveMobs: int
+    - remainingMobsToSpawn: int
+    + infinite: Boolean
+    + currentWave: int
+    + startWave()
+    + addSpawns(CreatureSpawnPlay)
+}
+
+class "@Entity CustomItemsBuild" as CustomItemsBuild {
+    + @EditableAttribute\n@Converter\nitemStack: ItemStack
+}
+class CustomItemPlay {
+    + itemStack: ItemStack
+}
+
+class "@Entity MapStatistics" as MapStatistics {
+    + timePlayed: int
+    + monsterBeaten: int
+    + maxWaveReached: int
+}
+
+class "@Entity BuildersManager" as BuildersManager {
+    Builders: Map<UUID, BuildersData> @UserEditable
+    connectedBuilders: List<Player> @Transient
+    + builderJoin(player: Player)
+    + builderLeft(player: Player)
+    + inviteBuilder(name: String)
+    + kickBuilder(name: String)
+}
+
+class "@Entity BuildersData" as BuildersData {
+    builder: UUID
+}
+
+enum BuildNotifications {
+    PLAYER_CONNECTIONS
+    MAP_CONFIG_EDITION
+}
+
+class "@Embed UserBuildPermissions" as UserBuildPermissions
+
+
+enum BuildPermissions {
+    EDIT_WORLD
+    EDIT_MAP_CONFIG
+    INVITE_BUILDERS
+    MANAGE_PERMISSION
+}
+
+class "@Embed CustomIconBuild" as CustomIconBuild {
+    + @EditableAttribute\nname: String
+    + @EditableAttribute\ndescription: String
+    + @EditableAttribute\nicon: Material
+}
+
+class CustomIconPlay {
+    + name: String
+    + description: String
+    + icon: Material
+}
+
+
+abstract Activable {
+    + isActive: Boolean
+    + activate()
+}
+
+
+enum ConditionLevel {
+    ERROR
+    WARNING
+}
+class MapCondition {
+    + concernedElement: String
+    + message: String
+    + test: BooleanSupplier
+    + suggeredFix: Runnable
+}
+
+interface BooleanSupplier
+
+interface UserEditable {
+    + triggerEdition(arg: EditableArgument)
+    + getIcon(): CustomIcon
+    + getMenuComponent(): MenuComponent
+}
+
+class EditableArgument {
+    + player: Player
+}
+annotation EditableAttribute {
+    action: Runnable
+}
+
+interface Child {
+    + getChildren(): List<Child>
+}
+
+abstract MenuComponent {
+    + forceNewLine: Boolean
+    + size: int
+    + contentFetcher: Supplier<MenuComponent>
+    - interactiveContent: Map<Int, MenuComponent>
+    + abstract drawContent()
+    + update()
+    + onClick(index: int)
+
+}
+class SingleComponent {
+    onClick: Runnable
+    ctr(UserEditable)
+}
+class ScrollMenu
+class ChoiceMenu
+class ValidationMenu
+
+class MenuDisplayer {
+    + player: Player
+    + inventory: Inventory
+    + open()
+    + close()
+    + update()
+    + onClick(index: int)
+}
+class SurvivorMenuHandler {
+    + onMenuOpen()
+    + onMenuClick()
+}
+interface Listener
+
+class PlayerSurvivorExtension
+
+abstract SBuildable {
+    - static separator: String
+    # modified: Boolean
+    # valid: Boolean
+    + validate(String: parentPath): List<MapCondition>
+    # abstract getName(): String
+    # abstract generateDraftInstance(): SPlayable
+    + getSPlayableDraftInstance(): SPlayable
+    + abstract getFinalSPlayable(): SPlayable
+}
+
+abstract SPlayable
+
+SurvivorMapBuild --|> SBuildable
+SurvivorMapBuild ..|> UserEditable
+SurvivorMapBuild --> "world\n1" SurvivorWorld
+SurvivorMapBuild --> "@EditableAttribute\nsectors\n*" MapSectorBuild
+SurvivorMapBuild --> "@EditableAttribute\nstartingSector\n1" MapSectorBuild
+SurvivorMapBuild --> "icon\n1" CustomIconBuild
+SurvivorMapBuild --> "waveManager\n1" WaveManagerBuild
+
+SurvivorMapPlay --|> SPlayable
+SurvivorMapPlay --> "startingSector\n1" MapSectorPlay
+SurvivorMapPlay --> "waveManager\n1" WaveManagerPlay
+
+MapSectorBuild --|> SBuildable
+MapSectorBuild ..|> UserEditable
+MapSectorBuild --> "icon\n1" CustomIconBuild
+MapSectorPlay --|> Activable
+MapSectorPlay --> "elements\n*" Activable
+
+CreatureSpawnerBuild --|> SBuildable
+CreatureSpawnerBuild ..|> UserEditable
+CreatureSpawnerPlay --|> Activable
+
+GameItemBuild --|> BuyableBuild
+GameItemPlay --|> BuyablePlay
+
+SectorDoorBuild --|> BuyableBuild
+SectorDoorBuild --> "fragment\n*" DoorFragmentBuild
+SectorDoorBuild --> "openingSector\n1" MapSectorBuild
+SectorDoorPlay --|> BuyablePlay
+SectorDoorPlay --> "fragment\n*" DoorFragmentPlay
+SectorDoorPlay --> "openingSector\n1" MapSectorPlay
+
+DoorFragmentBuild --|> SBuildable
+DoorFragmentBuild ..|> UserEditable
+DoorFragmentPlay --|> SPlayable
+
+BuyableBuild --|> SBuildable
+BuyableBuild ..|> UserEditable
+BuyableBuild --> "icon\n1" CustomIconBuild
+BuyablePlay --|> Activable
+BuyablePlay --> "icon\n1" CustomIconPlay
+
+WaveBuild --|> SBuildable
+WaveBuild --> "mobPool\n*" CustomMobBuild
+WavePlay --|> SPlayable 
+WavePlay --> "mobPool\n*" CustomMobPlay
+
+WaveManagerBuild --|> SBuildable
+WaveManagerBuild --> "waves\n*" WaveBuild
+WaveManagerPlay --|> SPlayable
+WaveManagerPlay --> "waves\n*" WavePlay
+WaveManagerPlay --> "activatedSpawns\n*" CreatureSpawnerPlay
+
+CustomMobBuild --|> SBuildable
+CustomMobPlay --|> SPlayable
+
+UserBuildPermissions --> "permissions\n*" BuildPermissions
+
+BuildersData --> "notifications\n*" BuildNotifications
+
+CustomIconBuild --|> SBuildable
+CustomIconBuild ..|> UserEditable
+CustomIconPlay --|> SPlayable
+
+Activable --|> SPlayable
+Activable ..|> Child
+
+
+SBuildable --> "conditions\n*" MapCondition
+
+MapCondition ..|> BooleanSupplier
+MapCondition --> "level\n1" ConditionLevel
+
+UserEditable ..|> Child
+
+EditableArgument --> "map\n1" SurvivorMapBuild
+
+EditableAttribute --> "icon\n1" CustomIconPlay
+
+SingleComponent --|> MenuComponent
+SingleComponent --> "icon\n1" CustomIconBuild
+
+ScrollMenu --|> MenuComponent
+ScrollMenu --> "content\n*" MenuComponent
+
+ChoiceMenu --|> MenuComponent
+ChoiceMenu --> "choices\n*" MenuComponent
+
+ValidationMenu --|> MenuComponent
+
+MenuDisplayer --> "mainComponent\n1" MenuComponent
+
+SurvivorMenuHandler ..|> Listener
+SurvivorMenuHandler --> "static\nmenus\n*" MenuDisplayer
+
+SBuildable --> "splayable\n1" SPlayable
+ 
+
+
+@enduml
