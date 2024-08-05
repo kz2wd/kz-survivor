@@ -3,7 +3,7 @@ package com.cludivers.kz_survivor.survivormap.build_tree
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import java.io.File.separator
 
-abstract class SBuildable {
+abstract class SBuildable: UserEditable {
     companion object {
         val SEPARATOR: String = "::"
     }
@@ -14,16 +14,18 @@ abstract class SBuildable {
     val conditions: MutableList<MapCondition> = mutableListOf()
 
 
-    abstract fun getName(): String
+    abstract fun fetchName(): String
 
-    abstract fun getChildren(): List<SBuildable>
+    open fun getChildren(): List<SBuildable> {
+        return listOf()
+    }
 
 
     /**
      *  Return failing condition with the path of the element that failed
      */
     fun validate(parentPath: String): List<Pair<MapCondition, String>> {
-        val currentName = "$parentPath$separator.${getName()}"
+        val currentName = "$parentPath$separator.${fetchName()}"
         return conditions.filterNot { it.asBoolean }.map { Pair(it, currentName) } + getChildren().flatMap { it.validate(currentName) }
     }
 
@@ -44,5 +46,9 @@ abstract class SBuildable {
     }
 
     abstract fun getFinalSPlayable(): SPlayable
+
+    override fun triggerEdition() {
+        TODO("Not yet implemented")
+    }
 
 }

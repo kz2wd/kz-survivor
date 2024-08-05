@@ -11,5 +11,6 @@ import java.util.function.BooleanSupplier
  */
 abstract class MapCondition(
     val message: String,
-    val fixMessage: String
+    val fixMessage: String,
+    val level: ConditionLevel
 ): BooleanSupplier, Runnable

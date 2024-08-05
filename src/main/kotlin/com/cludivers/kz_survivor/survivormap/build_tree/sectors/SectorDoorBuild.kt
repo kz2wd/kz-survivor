@@ -1,19 +1,24 @@
-package com.cludivers.kz_survivor.survivormap.build_tree.waves
+package com.cludivers.kz_survivor.survivormap.build_tree.sectors
 
 import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.SBuildable
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 
 @Entity
-class WaveManagerBuild: SBuildable() {
+class SectorDoorBuild: SBuildable() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long = 0
 
     @OneToMany
-    var waves: MutableList<WaveBuild> = mutableListOf()
+    var fragments: MutableList<DoorFragmentBuild> = mutableListOf()
 
     var icon: CustomIconBuild = CustomIconBuild()
 
@@ -36,4 +41,6 @@ class WaveManagerBuild: SBuildable() {
     override fun getMenuComponent(): MenuComponent {
         TODO("Not yet implemented")
     }
+
+
 }

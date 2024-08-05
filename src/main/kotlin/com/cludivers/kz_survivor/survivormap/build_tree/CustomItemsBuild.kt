@@ -1,19 +1,18 @@
-package com.cludivers.kz_survivor.survivormap.build_tree.waves
+package com.cludivers.kz_survivor.survivormap.build_tree
 
 import com.cludivers.kz_survivor.menus.MenuComponent
-import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
-import com.cludivers.kz_survivor.survivormap.build_tree.SBuildable
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
 
 @Entity
-class WaveManagerBuild: SBuildable() {
+class CustomItemsBuild: SBuildable() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0
-
-    @OneToMany
-    var waves: MutableList<WaveBuild> = mutableListOf()
+    private var id: Long = 0
 
     var icon: CustomIconBuild = CustomIconBuild()
 

@@ -181,10 +181,11 @@ abstract MapCondition {
 }
 
 interface BooleanSupplier
+interface Runnable
 
 interface UserEditable {
     + triggerEdition(arg: EditableArgument)
-    + getIcon(): CustomIcon
+    + getIcon(): CustomIconBuild
     + getMenuComponent(): MenuComponent
 }
 
@@ -245,25 +246,23 @@ abstract SPlayable {
 }
 
 SurvivorMapBuild --|> SBuildable
-SurvivorMapBuild ..|> UserEditable
 SurvivorMapBuild --> "world\n1" SurvivorWorld
 SurvivorMapBuild --> "@EditableAttribute\nsectors\n*" MapSectorBuild
 SurvivorMapBuild --> "@EditableAttribute\nstartingSector\n1" MapSectorBuild
 SurvivorMapBuild --> "icon\n1" CustomIconBuild
 SurvivorMapBuild --> "waveManager\n1" WaveManagerBuild
+SurvivorMapBuild --> "builders\n1" BuildersManager
 
 SurvivorMapPlay --|> SPlayable
 SurvivorMapPlay --> "startingSector\n1" MapSectorPlay
 SurvivorMapPlay --> "waveManager\n1" WaveManagerPlay
 
 MapSectorBuild --|> SBuildable
-MapSectorBuild ..|> UserEditable
 MapSectorBuild --> "icon\n1" CustomIconBuild
 MapSectorPlay --|> Activable
 MapSectorPlay --> "elements\n*" Activable
 
 CreatureSpawnerBuild --|> SBuildable
-CreatureSpawnerBuild ..|> UserEditable
 CreatureSpawnerPlay --|> Activable
 
 GameItemBuild --|> BuyableBuild
@@ -277,11 +276,9 @@ SectorDoorPlay --> "fragment\n*" DoorFragmentPlay
 SectorDoorPlay --> "openingSector\n1" MapSectorPlay
 
 DoorFragmentBuild --|> SBuildable
-DoorFragmentBuild ..|> UserEditable
 DoorFragmentPlay --|> SPlayable
 
 BuyableBuild --|> SBuildable
-BuyableBuild ..|> UserEditable
 BuyableBuild --> "icon\n1" CustomIconBuild
 BuyablePlay --|> Activable
 BuyablePlay --> "icon\n1" CustomIconPlay
@@ -305,7 +302,6 @@ UserBuildPermissions --> "permissions\n*" BuildPermissions
 BuildersData --> "notifications\n*" BuildNotifications
 
 CustomIconBuild --|> SBuildable
-CustomIconBuild ..|> UserEditable
 CustomIconPlay --|> SPlayable
 
 Activable --|> SPlayable
@@ -313,9 +309,8 @@ Activable --|> SPlayable
 SBuildable --> "conditions\n*" MapCondition
 
 MapCondition ..|> BooleanSupplier
+MapCondition ..|> Runnable
 MapCondition --> "level\n1" ConditionLevel
-
-UserEditable ..|> Child
 
 EditableArgument --> "map\n1" SurvivorMapBuild
 
@@ -337,6 +332,7 @@ MenuDisplayer --> "mainComponent\n1" MenuComponent
 SurvivorMenuHandler ..|> Listener
 SurvivorMenuHandler --> "static\nmenus\n*" MenuDisplayer
 
+SBuildable ..|> UserEditable
 SBuildable --> "splayable\n1" SPlayable
  
 

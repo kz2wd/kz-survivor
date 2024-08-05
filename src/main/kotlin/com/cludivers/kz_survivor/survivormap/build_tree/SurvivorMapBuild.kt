@@ -1,5 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
+import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.sectors.MapSectorBuild
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.*
@@ -23,12 +24,23 @@ class SurvivorMapBuild: SBuildable() {
 
     var maxPlayers: Int = DEFAULT_MAX_PLAYERS
 
-    override fun getName(): String {
-        TODO("Not yet implemented")
+    var icon: CustomIconBuild = CustomIconBuild()
+
+    @OneToOne
+    var world: SurvivorWorld = SurvivorWorld()
+
+    @OneToOne
+    var openingSection: MapSectorBuild? = null
+
+    @OneToMany
+    var sectors: MutableList<MapSectorBuild> = mutableListOf()
+
+    override fun fetchName(): String {
+        return icon.fetchName()
     }
 
     override fun getChildren(): List<SBuildable> {
-        TODO("Not yet implemented")
+        return sectors.toList()
     }
 
     override fun generateDraftInstance(): SPlayable {
@@ -39,6 +51,12 @@ class SurvivorMapBuild: SBuildable() {
         TODO("Not yet implemented")
     }
 
-//    var sectors: MutableList<MapSectorBuild> = mutableListOf()
+    override fun fetchIcon(): CustomIconBuild {
+        return icon
+    }
+
+    override fun getMenuComponent(): MenuComponent {
+        TODO("Not yet implemented")
+    }
 
 }
