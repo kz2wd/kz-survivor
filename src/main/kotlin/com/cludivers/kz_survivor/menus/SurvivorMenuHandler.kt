@@ -43,7 +43,15 @@ object SurvivorMenuHandler : Listener {
                     "Icon dummy",
                     Material.STONE
                 )
-            ) { Bukkit.broadcast(Component.text("Hello Menu :D")) })
+            ) { Bukkit.broadcast(Component.text("Hello Menu :D")) },
+            10 to SingleMenuComponent(
+                CustomIconBuild(
+                    "Huya",
+                    Material.STONE
+                )
+            ) { Bukkit.broadcast(Component.text("No :(")) }
+        )
+
         val menu = MultiMenuComponent(menuContent, false, 1, false)
         MenuDisplayer(event.player, menu).open(::registerMenu)
     }
@@ -51,6 +59,7 @@ object SurvivorMenuHandler : Listener {
     @EventHandler
     fun onMenuInteraction(event: InventoryClickEvent) {
 
+        // Let the player still interact with his own inventory
         val inventory = if (event.action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
             event.view.topInventory
         } else event.clickedInventory
@@ -60,13 +69,17 @@ object SurvivorMenuHandler : Listener {
             event.isCancelled = true
             return
         }
-        menuDisplay.onClick(event.slot, event)
+        menuDisplay.onClick(event.rawSlot, event)
 
     }
 
     @EventHandler
     fun onMenuDragItem(event: InventoryDragEvent) {
-        // Todo
+        // Let the player still interact with his own inventory
+        val isTopInventoryAffected = !event.rawSlots.none { it < event.view.topInventory.size }
+        val inventory = if (isTopInventoryAffected) { event.view.topInventory } else { event.view.bottomInventory }
+        val menuDisplay = getMenuDisplay(inventory) ?: return
+        menuDisplay.onClick(event.rawSlots.first(), event)
     }
 
     @EventHandler

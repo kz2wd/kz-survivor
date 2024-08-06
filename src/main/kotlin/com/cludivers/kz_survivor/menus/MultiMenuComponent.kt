@@ -28,17 +28,18 @@ class MultiMenuComponent(content: Map<Int, MenuComponent>, forceNewLine: Boolean
 
 
     override fun getContent(): Map<Int, CustomIconBuild> {
-        var currentOffset = 0
+        var currentOffset: Int
         val content = mutableMapOf<Int, CustomIconBuild>()
 
         interactiveContent.ranges.forEach {
-            var itemStartPos: Int = if (it.item.forceNewLine) { (ceil(currentOffset / 9.0) * 9).toInt() } else currentOffset
+            currentOffset = it.start
+            val itemStartPos: Int = if (it.item.forceNewLine) { (ceil(currentOffset / 9.0) * 9).toInt() } else currentOffset
             var lastPos = currentOffset
             it.item.getContent().forEach { (innerPos, component) ->
                 lastPos = itemStartPos + innerPos
                 content[lastPos] = component
             }
-            currentOffset = lastPos
+            currentOffset = lastPos + 1
 
         }
 
