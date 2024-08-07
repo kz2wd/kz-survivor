@@ -1,6 +1,8 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
 import com.cludivers.kz_survivor.menus.MenuComponent
+import com.cludivers.kz_survivor.menus.MultiMenuComponent
+import com.cludivers.kz_survivor.menus.SingleMenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.sectors.MapSectorBuild
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.*
@@ -56,7 +58,10 @@ class SurvivorMapBuild: SBuildable() {
     }
 
     override fun getMenuComponent(): MenuComponent {
-        TODO("Not yet implemented")
+        val content = mutableMapOf<Int, MenuComponent>(
+            0 to SingleMenuComponent(icon) {},
+        )
+        return MultiMenuComponent(content.toMap())
     }
 
 }

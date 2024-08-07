@@ -1,5 +1,6 @@
 package com.cludivers.kz_survivor.menus
 
+import com.cludivers.kz_survivor.KzSurvivor.Companion.plugin
 import com.cludivers.prototyping.main
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -14,7 +15,7 @@ import kotlin.math.max
 class MenuDisplayer(private val player: Player, private val mainComponent: MenuComponent, val allowShiftClick: Boolean = false) {
     private var inventory: Inventory? = null
 
-    fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit) {
+    fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
 
         val content = mainComponent.getContent()
 
@@ -34,7 +35,17 @@ class MenuDisplayer(private val player: Player, private val mainComponent: MenuC
         content.forEach { inventory!!.setItem(it.key, it.value.buildItemStack()) }
 
         inventoryAdder(this, inventory!!)
-        player.openInventory(inventory!!)
+
+        // Delay because some events will trigger menu opening, and some need it to be delayed
+        // so default behavior is to delay to ensure no issues occur
+        if (!delay){
+            player.openInventory(inventory!!)
+        } else {
+            Bukkit.getScheduler().runTask(plugin, Runnable {
+                player.openInventory(inventory!!)
+            })
+        }
+
     }
 
     fun close() {

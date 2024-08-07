@@ -6,7 +6,12 @@ import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import kotlin.math.ceil
 import kotlin.math.max
 
-class MultiMenuComponent(content: Map<Int, MenuComponent>, forceNewLine: Boolean, size: Int, allowPickingItem: Boolean) : MenuComponent(forceNewLine, size,
+open class MultiMenuComponent(
+    content: Map<Int, MenuComponent>,
+    forceNewLine: Boolean = false,
+    allowPickingItem: Boolean = false
+) : MenuComponent(
+    forceNewLine, 0,
     allowPickingItem
 ) {
 
@@ -19,6 +24,7 @@ class MultiMenuComponent(content: Map<Int, MenuComponent>, forceNewLine: Boolean
             interactiveContent.ranges.add(RangeItem(currentPos, currentPos + component.size, component))
             currentPos += component.size
         }
+        size = currentPos
     }
 
     override fun onClick(index: Int): Boolean {
@@ -33,7 +39,9 @@ class MultiMenuComponent(content: Map<Int, MenuComponent>, forceNewLine: Boolean
 
         interactiveContent.ranges.forEach {
             currentOffset = it.start
-            val itemStartPos: Int = if (it.item.forceNewLine) { (ceil(currentOffset / 9.0) * 9).toInt() } else currentOffset
+            val itemStartPos: Int = if (it.item.forceNewLine) {
+                (ceil(currentOffset / 9.0) * 9).toInt()
+            } else currentOffset
             var lastPos = currentOffset
             it.item.getContent().forEach { (innerPos, component) ->
                 lastPos = itemStartPos + innerPos

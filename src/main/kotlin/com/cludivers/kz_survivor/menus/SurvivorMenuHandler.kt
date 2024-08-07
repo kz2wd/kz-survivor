@@ -1,7 +1,9 @@
 package com.cludivers.kz_survivor.menus
 
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
+import com.cludivers.kz_survivor.survivormap.build_tree.SurvivorMapBuild
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
@@ -40,20 +42,19 @@ object SurvivorMenuHandler : Listener {
         val menuContent = mapOf(
             0 to SingleMenuComponent(
                 CustomIconBuild(
-                    "Icon dummy",
+                    "New map",
                     Material.STONE
                 )
-            ) { Bukkit.broadcast(Component.text("Hello Menu :D")) },
-            10 to SingleMenuComponent(
-                CustomIconBuild(
-                    "Huya",
-                    Material.STONE
-                )
-            ) { Bukkit.broadcast(Component.text("No :(")) }
+            ) {
+                event.player.sendMessage(Component.text("Creating new map").color(NamedTextColor.GREEN))
+                val map = SurvivorMapBuild()
+                val mapMenu = MenuDisplayer(event.player, map.getMenuComponent())
+                mapMenu.open(::registerMenu)
+              },
         )
 
-        val menu = MultiMenuComponent(menuContent, false, 1, false)
-        MenuDisplayer(event.player, menu).open(::registerMenu)
+        val menu = MultiMenuComponent(menuContent)
+        MenuDisplayer(event.player, menu).open(::registerMenu, false)
     }
 
     @EventHandler

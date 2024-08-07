@@ -2,7 +2,7 @@ package com.cludivers.kz_survivor.menus
 
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 
-class SingleMenuComponent(private val icon: CustomIconBuild, allowPickingItem: Boolean = false, private val onClick: Runnable): MenuComponent(false,  1,
+class SingleMenuComponent(val icon: CustomIconBuild, allowPickingItem: Boolean = false, private val onClick: Runnable): MenuComponent(false,  1,
     allowPickingItem
 ) {
     override fun getContent(): Map<Int, CustomIconBuild> {
