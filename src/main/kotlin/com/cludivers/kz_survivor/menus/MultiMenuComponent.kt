@@ -15,20 +15,28 @@ open class MultiMenuComponent(
     allowPickingItem
 ) {
 
+    constructor(content: List<MenuComponent>, forceNewLine: Boolean = false, allowPickingItem: Boolean = false) :
+            this(
+                content.mapIndexed { idx, component -> idx to component }.toMap(),
+                forceNewLine,
+                allowPickingItem
+            )
+
     private val interactiveContent: RangeMap<MenuComponent> = RangeMap()
 
     init {
         var currentPos = 0
-        content.toSortedMap().forEach { preferedPosition, component ->
-            currentPos = max(currentPos, preferedPosition)
+        content.toSortedMap().forEach { preferredPosition, component ->
+            currentPos = max(currentPos, preferredPosition)
             interactiveContent.ranges.add(RangeItem(currentPos, currentPos + component.size, component))
             currentPos += component.size
         }
         size = currentPos
     }
 
-    override fun onClick(index: Int): Boolean {
-        interactiveContent.findItem(index)?.let { (startIndex, it) -> return it.onClick(index - startIndex) }
+    override fun onClick(p: OnClickParameter): Boolean {
+        interactiveContent.findItem(p.index)
+            ?.let { (startIndex, it) -> return it.onClick(p.withIndex(p.index - startIndex)) }
         return allowPickingItem
     }
 

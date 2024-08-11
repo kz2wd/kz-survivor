@@ -3,16 +3,19 @@ package com.cludivers.kz_survivor.survivormap.build_tree
 import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.menus.MultiMenuComponent
 import com.cludivers.kz_survivor.menus.SingleMenuComponent
+import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.build_tree.sectors.MapSectorBuild
+import com.cludivers.kz_survivor.survivormap.build_tree.waves.WaveManagerBuild
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.*
+import org.bukkit.Material
 import java.util.UUID
 
 @Entity
 class SurvivorMapBuild: SBuildable() {
 
     companion object {
-        val DEFAULT_MAX_PLAYERS = 8
+        const val DEFAULT_MAX_PLAYERS = 8
     }
 
     @Id
@@ -24,18 +27,26 @@ class SurvivorMapBuild: SBuildable() {
     @ElementCollection
     var maxMapElements: MutableMap<Class<*>, Int> = mutableMapOf()
 
+    @EditableAttribute
     var maxPlayers: Int = DEFAULT_MAX_PLAYERS
 
-    var icon: CustomIconBuild = CustomIconBuild()
+    @EditableAttribute
+    var icon: CustomIconBuild = CustomIconBuild("SurvivorMapNameHere", Material.COMPASS)
 
     @OneToOne
     var world: SurvivorWorld = SurvivorWorld()
 
     @OneToOne
-    var openingSection: MapSectorBuild? = null
+    @EditableAttribute
+    var openingSection: MapSectorBuild = MapSectorBuild()
 
     @OneToMany
+    @EditableAttribute
     var sectors: MutableList<MapSectorBuild> = mutableListOf()
+
+    @OneToOne
+    @EditableAttribute
+    var waveManager: WaveManagerBuild = WaveManagerBuild()
 
     override fun fetchName(): String {
         return icon.fetchName()

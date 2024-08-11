@@ -2,19 +2,20 @@ package com.cludivers.kz_survivor.survivormap.build_tree
 
 import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.menus.SingleMenuComponent
+import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.Embeddable
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
 
 @Embeddable
-class CustomIconBuild(var name: String, var icon: Material) : SBuildable() {
-    constructor() : this("Unnamed", Material.AIR) {
+class CustomIconBuild(@EditableAttribute var name: String, @EditableAttribute var icon: Material) : SBuildable() {
+    constructor() : this("Unnamed", Material.FLOWERING_AZALEA) {
 
     }
 
+    @EditableAttribute
     var description: String = "No description"
 
     override fun fetchName(): String {
@@ -43,5 +44,14 @@ class CustomIconBuild(var name: String, var icon: Material) : SBuildable() {
         item.editMeta { it.itemName(Component.text(name)) }
         item.editMeta { it.lore(mutableListOf(Component.text(description))) }
         return item
+    }
+
+    companion object {
+        fun fromItemStack(item: ItemStack): CustomIconBuild {
+            return CustomIconBuild(
+                item.itemMeta?.itemName()?.examinableName() ?: "unnamed item",
+                item.type
+                )
+        }
     }
 }

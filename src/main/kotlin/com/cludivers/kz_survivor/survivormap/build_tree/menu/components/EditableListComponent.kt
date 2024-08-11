@@ -5,15 +5,16 @@ import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.menus.MultiMenuComponent
 import com.cludivers.kz_survivor.menus.SingleMenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
+import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import org.bukkit.Material
 
-class EditableListComponent<T>(attribute: List<T>): MultiMenuComponent(fromAttribute(attribute)) {
+class EditableListComponent(attribute: List<Any>): MultiMenuComponent(fromAttribute(attribute)) {
 
     companion object{
-        fun<T> fromAttribute(value: List<T>): Map<Int, MenuComponent> {
+        fun fromAttribute(value: List<Any>): Map<Int, MenuComponent> {
             return mapOf(
                 0 to SingleMenuComponent(CustomIconBuild("Add new section", Material.BRICK_WALL)) {},
-                1 to InlineScrollComponent(value.map { it })
+                1 to InlineScrollComponent(value.map { UserEditable.fetchPreviewComponent(it) }, 6)
             )
 
         }

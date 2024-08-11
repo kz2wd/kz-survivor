@@ -13,6 +13,6 @@ abstract class MenuComponent (
 
     open fun close(){}
 
-    abstract fun onClick(index: Int): Boolean
+    abstract fun onClick(p: OnClickParameter): Boolean
 
 }

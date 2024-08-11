@@ -1,25 +1,22 @@
 package com.cludivers.kz_survivor.survivormap.build_tree.sectors
 
-import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
-import com.cludivers.kz_survivor.survivormap.build_tree.SBuildable
+import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.Transient
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 
 @Entity
-class GameItemBuild: SBuildable() {
+class GameItemBuild: BuyableBuild() {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long = 0
-
-    var icon: CustomIconBuild = CustomIconBuild()
+    @EditableAttribute
+    @Transient
+    var item: ItemStack = ItemStack(Material.WOODEN_AXE)
 
     override fun fetchName(): String {
-        return icon.name
+        return item.itemMeta?.itemName()?.examinableName() ?: "unnamed item"
     }
 
     override fun generateDraftInstance(): SPlayable {
@@ -31,10 +28,6 @@ class GameItemBuild: SBuildable() {
     }
 
     override fun fetchIcon(): CustomIconBuild {
-        return icon
-    }
-
-    override fun getMenuComponent(): MenuComponent {
-        TODO("Not yet implemented")
+        return CustomIconBuild.fromItemStack(item)
     }
 }

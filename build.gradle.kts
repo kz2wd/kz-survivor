@@ -26,6 +26,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.google.dagger:dagger-compiler:2.51.1")
     ksp("com.google.dagger:dagger-compiler:2.51.1")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20-RC")
+
+    testImplementation(kotlin("test"))
+    testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
 }
 
 val targetJavaVersion = 22
@@ -134,5 +138,8 @@ tasks.withType<ShadowJar> {
     archiveFileName.set(shadowJarFileName)
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
 
 

@@ -1,5 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
+import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import java.io.File.separator
@@ -29,7 +30,6 @@ abstract class SBuildable: UserEditable {
         val currentName = "$parentPath$separator.${fetchName()}"
         return conditions.filterNot { it.asBoolean }.map { Pair(it, currentName) } + getChildren().flatMap { it.validate(currentName) }
     }
-
 
     /**
      * This part is about generating the playable map
