@@ -3,6 +3,7 @@ package com.cludivers.kz_survivor.survivormap.build_tree
 import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.menus.MultiMenuComponent
 import com.cludivers.kz_survivor.menus.SingleMenuComponent
+import com.cludivers.kz_survivor.survivormap.build_tree.menu.DisplayModes
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.build_tree.sectors.MapSectorBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.waves.WaveManagerBuild
@@ -41,7 +42,7 @@ class SurvivorMapBuild: SBuildable() {
     var openingSection: MapSectorBuild = MapSectorBuild()
 
     @OneToMany
-    @EditableAttribute
+    @EditableAttribute(displayMode = DisplayModes.PREFER_FULL_DISPLAY)
     var sectors: MutableList<MapSectorBuild> = mutableListOf()
 
     @OneToOne

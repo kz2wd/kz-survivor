@@ -22,22 +22,22 @@ interface UserEditable {
     }
 
     fun fetchPreviewComponent(): SingleMenuComponent {
-        return SingleMenuComponent(fetchIcon()) { p -> MenuDisplayer(p.player, getMenuComponent(this)).open(SurvivorMenuHandler::registerMenu) }
+        return SingleMenuComponent(fetchIcon()) { p -> MenuDisplayer(p.player, "", getMenuComponent(this)).open(SurvivorMenuHandler::registerMenu) }
     }
 
     companion object {
 
-        private val classMenusBuilders: MutableMap<KClass<out Any>, (Any) -> MenuComponent> = mutableMapOf()
+
 
         fun getMenuComponent(instance: Any?): MenuComponent {
             if (instance == null) return SingleMenuComponent.EMPTY
-            val componentBuilder = classMenusBuilders[instance::class]
+            val componentBuilder = DisplayModes.PREFER_FULL_DISPLAY.classMenusBuilders[instance::class]
             if (componentBuilder != null) {
                 return componentBuilder(instance)
             }
 
             val newBuilder = getMenuComponentBuilder(instance::class)
-            classMenusBuilders[instance::class] = newBuilder
+            DisplayModes.PREFER_FULL_DISPLAY.classMenusBuilders[instance::class] = newBuilder
             return newBuilder(instance)
         }
 
@@ -70,6 +70,7 @@ interface UserEditable {
 
         @Suppress("UNCHECKED_CAST")
         private fun buildAttributeMenuComponent(clazz: KClass<out Any>): (Any) -> MenuComponent {
+            Bukkit.broadcast(Component.text("Building component of ${clazz.simpleName}"))
             return when (clazz) {
                 List::class, ArrayList::class ->
                     { instance -> EditableListComponent(instance as List<Any>) }
@@ -79,11 +80,14 @@ interface UserEditable {
         }
 
         fun fetchPreviewComponent(instance: Any?): SingleMenuComponent {
+            Bukkit.broadcast(Component.text("Fetching preview component of ${instance?.javaClass?.name ?: "class"}"))
             if (instance == null) return SingleMenuComponent.EMPTY
             if (instance is UserEditable) {
                 return instance.fetchPreviewComponent()
             }
             return when (instance::class) {
+                List::class, ArrayList::class -> SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.STONE))
+                { p -> MenuDisplayer(p.player, "", getMenuComponent(instance)).open(SurvivorMenuHandler::registerMenu)  }
                 Int::class -> {
                     val name: String = (instance as? KProperty<*>)?.name ?: "property"
                     SingleMenuComponent(
@@ -92,6 +96,16 @@ interface UserEditable {
                             Material.BRICK_WALL
                         )
                     ) { p -> p.player.sendMessage(Component.text("Type the new amount :D (not wired yet)")) }
+                }
+                Material::class -> {
+                    SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", instance as Material)) {
+                        p -> p.player.sendMessage(Component.text("Drop the replacing material (not wired yet)"))
+                    }
+                }
+                String::class -> {
+                    SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.NAME_TAG)) {
+                            p -> p.player.sendMessage(Component.text("Type the new name (not wired yet)"))
+                    }
                 }
                 else -> SingleMenuComponent.EMPTY
             }

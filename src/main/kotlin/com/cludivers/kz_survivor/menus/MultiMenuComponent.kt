@@ -3,6 +3,8 @@ package com.cludivers.kz_survivor.menus
 import com.cludivers.kz_survivor.data_structure.RangeItem
 import com.cludivers.kz_survivor.data_structure.RangeMap
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
+import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import kotlin.math.ceil
 import kotlin.math.max
 
@@ -42,16 +44,16 @@ open class MultiMenuComponent(
 
 
     override fun getContent(): Map<Int, CustomIconBuild> {
-        var currentOffset: Int
+        var currentOffset = 0
         val content = mutableMapOf<Int, CustomIconBuild>()
 
         interactiveContent.ranges.forEach {
-            currentOffset = it.start
+            currentOffset = max(it.start, currentOffset)
             val itemStartPos: Int = if (it.item.forceNewLine) {
                 (ceil(currentOffset / 9.0) * 9).toInt()
             } else currentOffset
-            var lastPos = currentOffset
-            it.item.getContent().forEach { (innerPos, component) ->
+            var lastPos = itemStartPos
+            it.item.getContent().toSortedMap().forEach { (innerPos, component) ->
                 lastPos = itemStartPos + innerPos
                 content[lastPos] = component
             }

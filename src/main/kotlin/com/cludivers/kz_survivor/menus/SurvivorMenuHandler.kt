@@ -42,7 +42,7 @@ object SurvivorMenuHandler : Listener {
         }
         event.player.sendMessage(Component.text("Creating new map").color(NamedTextColor.GREEN))
         val map = SurvivorMapBuild()
-        MenuDisplayer(event.player, UserEditable.getMenuComponent(map)).open(::registerMenu, false)
+        MenuDisplayer(event.player,  "Map Editor Menu", UserEditable.getMenuComponent(map)).open(::registerMenu, false)
     }
 
     @EventHandler

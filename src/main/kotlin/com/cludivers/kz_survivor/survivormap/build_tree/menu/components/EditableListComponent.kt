@@ -8,7 +8,11 @@ import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import org.bukkit.Material
 
-class EditableListComponent(attribute: List<Any>): MultiMenuComponent(fromAttribute(attribute)) {
+class EditableListComponent(attribute: List<Any>, newLine: Boolean = true): MultiMenuComponent(fromAttribute(attribute), newLine) {
+
+    init {
+        size = 9
+    }
 
     companion object{
         fun fromAttribute(value: List<Any>): Map<Int, MenuComponent> {
