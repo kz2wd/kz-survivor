@@ -42,21 +42,30 @@ open class MultiMenuComponent(
         return allowPickingItem
     }
 
-
-    override fun getContent(): Map<Int, CustomIconBuild> {
+    // Horrible mess kill it.
+    /**
+     * Here is the list of functionalities
+     * - GetContent(start: int, end: int)
+     * - items have a size
+     * - then must fit into the asked range, or not be included -> could lead to items that will never fit ? :/
+     * - save what was generated for next time it is asked
+     */
+    override fun getContent(maxQuantity: Int): Map<Int, CustomIconBuild> {
         var currentOffset = 0
         val content = mutableMapOf<Int, CustomIconBuild>()
-
-        interactiveContent.ranges.forEach {
+        var currentQuantity = 0
+        interactiveContent.ranges.takeWhile { currentQuantity < maxQuantity }. forEach {
             currentOffset = max(it.start, currentOffset)
             val itemStartPos: Int = if (it.item.forceNewLine) {
                 (ceil(currentOffset / 9.0) * 9).toInt()
             } else currentOffset
             var lastPos = itemStartPos
-            it.item.getContent().toSortedMap().forEach { (innerPos, component) ->
+            val remainingSpace = maxQuantity - currentQuantity
+            it.item.getContent(remainingSpace).toSortedMap().forEach { (innerPos, component) ->
                 lastPos = itemStartPos + innerPos
                 content[lastPos] = component
             }
+            currentQuantity += it.size()
             currentOffset = lastPos + 1
 
         }

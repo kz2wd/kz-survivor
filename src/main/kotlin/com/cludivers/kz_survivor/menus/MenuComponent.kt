@@ -7,7 +7,7 @@ abstract class MenuComponent (
     var size: Int,
     val allowPickingItem: Boolean,
 ) {
-    abstract fun getContent(): Map<Int, CustomIconBuild>
+    abstract fun getContent(maxQuantity: Int): Map<Int, CustomIconBuild>
 
     open fun update(){}
 
