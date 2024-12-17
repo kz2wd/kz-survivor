@@ -1,61 +1,45 @@
 package com.cludivers.kz_survivor.menus
 
+import com.cludivers.kz_survivor.menus.Component as menusComponent
 import com.cludivers.kz_survivor.KzSurvivor.Companion.plugin
 import com.cludivers.kz_survivor.menus.advanced.MultiComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import net.kyori.adventure.text.Component
+import org.apache.commons.lang3.mutable.Mutable
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.inventory.Inventory
-import kotlin.math.ceil
 
-class MenuDisplayer(private val player: Player, private val name: String, private val mainComponent: com.cludivers.kz_survivor.menus.Component, val allowShiftClick: Boolean = false) {
-    private var inventory: Inventory? = null
 
+class MenuDisplayer(private val player: Player, private val name: String, private val mainComponent: menusComponent, val allowShiftClick: Boolean = false) {
     private var inventories: MutableList<Inventory> = mutableListOf()
+
     private var currentPageIndex = 0
     private var maxPageIndex = 0
 
     fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
-        val maxInventorySize = 9 * 6
-        when (mainComponent) {
-            is UnitComponent -> return
-            is MultiComponent -> Unit
-            else -> return
-        }
-        val content = mainComponent.getContent(maxInventorySize)
 
-        // Choose good menu type & size depending on size
-        // In case there is 1 element at index 0, max between max index required and size
-//        val size: Int? = content.maxByOrNull { it.key }?.key?.let { max(content.size, it) }
-        val size: Int? = content.maxOfOrNull { it.key } ?.plus(1)  // Convert index to size, so add 1.
-        if (size == null || size == 0) {
-            return
-        }
+        if (mainComponent !is MultiComponent) { return }
 
-        // size + 1 because it starts at 0 in the inventory, so if 1 item at index 9 -> needs 2 rows
-        val sizeNeeded = ceil( (size + 1) / 9.0).toInt() * 9
+        inventories.add(Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]")))
 
-        // 54 is max inventory size in minecraft
-        if (sizeNeeded <= 54) {
-            fillBasicInventory(content, sizeNeeded)
-        } else {
-            fillInfiniteInventory(content)
-        }
+        val firstInventory = inventories[0]
 
-        inventoryAdder(this, inventory!!)
+
+
+        inventoryAdder(this, firstInventory)
 
 
         // Delay because some events will trigger menu opening, and some need it to be delayed
         // so default behavior is to delay to ensure no issues occur
         if (!delay){
             player.closeInventory()
-            player.openInventory(inventory!!)
+            player.openInventory(firstInventory)
         } else {
             Bukkit.getScheduler().runTask(plugin, Runnable {
                 player.closeInventory()
-                player.openInventory(inventory!!)
+                player.openInventory(firstInventory)
             })
         }
 

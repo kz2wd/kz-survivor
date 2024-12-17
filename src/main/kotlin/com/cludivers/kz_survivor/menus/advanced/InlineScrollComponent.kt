@@ -7,7 +7,7 @@ import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import org.bukkit.Material
 
 class InlineScrollComponent(private val items: List<UnitComponent>, private val amountOfItemShown: Int, allowPickingItem: Boolean = false, forceNewLine: Boolean = false) : Component(
-    forceNewLine, amountOfItemShown + 2, allowPickingItem
+    forceNewLine, allowPickingItem
 ) {
 
     private var currentIndex = 0

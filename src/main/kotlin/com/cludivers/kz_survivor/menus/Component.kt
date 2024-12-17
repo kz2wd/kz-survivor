@@ -1,8 +1,5 @@
 package com.cludivers.kz_survivor.menus
 
-import com.cludivers.kz_survivor.data_structure.RangeItem
-import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
-
 abstract class Component(
     val forceNewLine: Boolean,
     val allowPickingItem: Boolean,
