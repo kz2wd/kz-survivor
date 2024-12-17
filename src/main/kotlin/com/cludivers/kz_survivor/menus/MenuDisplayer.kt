@@ -1,6 +1,7 @@
 package com.cludivers.kz_survivor.menus
 
 import com.cludivers.kz_survivor.KzSurvivor.Companion.plugin
+import com.cludivers.kz_survivor.menus.advanced.MultiComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -8,9 +9,8 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.inventory.Inventory
 import kotlin.math.ceil
-import kotlin.math.max
 
-class MenuDisplayer(private val player: Player, private val name: String, private val mainComponent: MenuComponent, val allowShiftClick: Boolean = false) {
+class MenuDisplayer(private val player: Player, private val name: String, private val mainComponent: com.cludivers.kz_survivor.menus.Component, val allowShiftClick: Boolean = false) {
     private var inventory: Inventory? = null
 
     private var inventories: MutableList<Inventory> = mutableListOf()
@@ -18,12 +18,18 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
     private var maxPageIndex = 0
 
     fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
-
-        val content = mainComponent.getContent()
+        val maxInventorySize = 9 * 6
+        when (mainComponent) {
+            is UnitComponent -> return
+            is MultiComponent -> Unit
+            else -> return
+        }
+        val content = mainComponent.getContent(maxInventorySize)
 
         // Choose good menu type & size depending on size
         // In case there is 1 element at index 0, max between max index required and size
-        val size: Int? = content.maxByOrNull { it.key }?.key?.let { max(content.size, it) }
+//        val size: Int? = content.maxByOrNull { it.key }?.key?.let { max(content.size, it) }
+        val size: Int? = content.maxOfOrNull { it.key } ?.plus(1)  // Convert index to size, so add 1.
         if (size == null || size == 0) {
             return
         }

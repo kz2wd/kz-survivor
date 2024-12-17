@@ -1,7 +1,5 @@
 package com.cludivers.kz_survivor.survivormap.build_tree.sectors
 
-import com.cludivers.kz_survivor.menus.MenuComponent
-import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.SBuildable
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable

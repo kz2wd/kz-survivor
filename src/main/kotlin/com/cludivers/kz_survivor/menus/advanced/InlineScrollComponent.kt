@@ -1,9 +1,12 @@
-package com.cludivers.kz_survivor.menus
+package com.cludivers.kz_survivor.menus.advanced
 
+import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.OnClickParameter
+import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import org.bukkit.Material
 
-class InlineScrollComponent(private val items: List<SingleMenuComponent>, private val amountOfItemShown: Int, allowPickingItem: Boolean = false, forceNewLine: Boolean = false) : MenuComponent(
+class InlineScrollComponent(private val items: List<UnitComponent>, private val amountOfItemShown: Int, allowPickingItem: Boolean = false, forceNewLine: Boolean = false) : Component(
     forceNewLine, amountOfItemShown + 2, allowPickingItem
 ) {
 

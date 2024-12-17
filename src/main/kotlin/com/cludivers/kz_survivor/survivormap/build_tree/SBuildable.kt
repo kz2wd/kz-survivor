@@ -1,6 +1,5 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
-import com.cludivers.kz_survivor.menus.MenuComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import java.io.File.separator

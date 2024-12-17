@@ -1,7 +1,7 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
-import com.cludivers.kz_survivor.menus.MenuComponent
-import com.cludivers.kz_survivor.menus.SingleMenuComponent
+import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.Embeddable
@@ -35,8 +35,8 @@ class CustomIconBuild(@EditableAttribute var name: String, @EditableAttribute va
         return this
     }
 
-    override fun getMenuComponent(): MenuComponent {
-        return SingleMenuComponent(this) {}
+    override fun getMenuComponent(): com.cludivers.kz_survivor.menus.Component {
+        return UnitComponent(this) {}
     }
 
     fun buildItemStack(): ItemStack{

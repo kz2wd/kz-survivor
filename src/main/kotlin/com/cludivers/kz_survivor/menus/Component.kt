@@ -1,13 +1,12 @@
 package com.cludivers.kz_survivor.menus
 
+import com.cludivers.kz_survivor.data_structure.RangeItem
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 
-abstract class MenuComponent (
+abstract class Component(
     val forceNewLine: Boolean,
-    var size: Int,
     val allowPickingItem: Boolean,
 ) {
-    abstract fun getContent(maxQuantity: Int): Map<Int, CustomIconBuild>
 
     open fun update(){}
 

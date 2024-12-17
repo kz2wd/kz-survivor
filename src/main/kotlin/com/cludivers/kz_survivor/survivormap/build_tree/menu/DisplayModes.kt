@@ -1,6 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree.menu
 
-import com.cludivers.kz_survivor.menus.MenuComponent
+import com.cludivers.kz_survivor.menus.Component
 import kotlin.reflect.KClass
 
 enum class DisplayModes {
@@ -10,6 +10,6 @@ enum class DisplayModes {
     ;
 
 
-    val classMenusBuilders: MutableMap<KClass<out Any>, (Any) -> MenuComponent> = mutableMapOf()
+    val classMenusBuilders: MutableMap<KClass<out Any>, (Any) -> Component> = mutableMapOf()
 
 }

@@ -1,8 +1,8 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
-import com.cludivers.kz_survivor.menus.MenuComponent
-import com.cludivers.kz_survivor.menus.MultiMenuComponent
-import com.cludivers.kz_survivor.menus.SingleMenuComponent
+import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.advanced.MultiComponent
+import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.DisplayModes
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.build_tree.sectors.MapSectorBuild
@@ -69,11 +69,11 @@ class SurvivorMapBuild: SBuildable() {
         return icon
     }
 
-    override fun getMenuComponent(): MenuComponent {
-        val content = mutableMapOf<Int, MenuComponent>(
-            0 to SingleMenuComponent(icon) {},
+    override fun getMenuComponent(): Component {
+        val content = mutableMapOf<Int, Component>(
+            0 to UnitComponent(icon) {},
         )
-        return MultiMenuComponent(content.toMap())
+        return MultiComponent(content.toMap())
     }
 
 }

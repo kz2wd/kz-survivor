@@ -1,6 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
-import com.cludivers.kz_survivor.menus.MenuComponent
+import com.cludivers.kz_survivor.menus.Component
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -32,7 +32,7 @@ class CustomItemsBuild: SBuildable() {
         return icon
     }
 
-    override fun getMenuComponent(): MenuComponent {
+    override fun getMenuComponent(): Component {
         TODO("Not yet implemented")
     }
 }

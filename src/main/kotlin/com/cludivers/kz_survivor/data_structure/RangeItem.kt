@@ -1,9 +1,22 @@
 package com.cludivers.kz_survivor.data_structure
 
-data class RangeItem<T>(val start: Int, val end: Int, val item: T) {
+abstract class RangeItem<T> (var start: Int = 0) {
 
-    fun size(): Int {
-        return end - start
+    fun start(): Int {
+        return start
+    }
+
+    abstract fun size(): Int
+
+    fun end(): Int {
+        return start + size()
+    }
+
+    abstract fun item(): T
+
+    fun withOffset(offset: Int): RangeItem<T> {
+        start += offset
+        return this
     }
 
 }

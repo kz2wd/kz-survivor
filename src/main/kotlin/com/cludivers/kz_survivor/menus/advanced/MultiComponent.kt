@@ -1,44 +1,38 @@
-package com.cludivers.kz_survivor.menus
+package com.cludivers.kz_survivor.menus.advanced
 
 import com.cludivers.kz_survivor.data_structure.RangeItem
 import com.cludivers.kz_survivor.data_structure.RangeMap
+import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.InMenuComponent
+import com.cludivers.kz_survivor.menus.OnClickParameter
+import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
-import net.kyori.adventure.text.Component
-import org.bukkit.Bukkit
 import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.properties.Delegates
 
-open class MultiMenuComponent(
-    content: Map<Int, MenuComponent>,
+open class MultiComponent(
+    val components: Map<Int, Component>,
     forceNewLine: Boolean = false,
     allowPickingItem: Boolean = false
-) : MenuComponent(
-    forceNewLine, 0,
+) : Component(
+    forceNewLine,
     allowPickingItem
-) {
+), Iterable<InMenuComponent> {
 
-    constructor(content: List<MenuComponent>, forceNewLine: Boolean = false, allowPickingItem: Boolean = false) :
+    constructor(components: List<Component>, forceNewLine: Boolean = false, allowPickingItem: Boolean = false) :
             this(
-                content.mapIndexed { idx, component -> idx to component }.toMap(),
+                components.mapIndexed { idx, component -> idx to component }.toMap(),
                 forceNewLine,
                 allowPickingItem
             )
 
-    private val interactiveContent: RangeMap<MenuComponent> = RangeMap()
-
-    init {
-        var currentPos = 0
-        content.toSortedMap().forEach { preferredPosition, component ->
-            currentPos = max(currentPos, preferredPosition)
-            interactiveContent.ranges.add(RangeItem(currentPos, currentPos + component.size, component))
-            currentPos += component.size
-        }
-        size = currentPos
-    }
+    private val interactiveContent: MutableMap<Int, Component> = mutableMapOf()
+    var size by Delegates.notNull<Int>()
 
     override fun onClick(p: OnClickParameter): Boolean {
-        interactiveContent.findItem(p.index)
-            ?.let { (startIndex, it) -> return it.onClick(p.withIndex(p.index - startIndex)) }
+        interactiveContent.get(p.index)
+            ?.let { return it.onClick(p) }
         return allowPickingItem
     }
 
@@ -71,6 +65,10 @@ open class MultiMenuComponent(
         }
 
         return content
+    }
+
+    override fun iterator(): Iterator<InMenuComponent> {
+        return UnitComponentIterator(components.toList())
     }
 
 

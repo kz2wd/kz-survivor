@@ -1,6 +1,7 @@
 package com.cludivers.kz_survivor.survivormap.build_tree.menu
 
 import com.cludivers.kz_survivor.menus.*
+import com.cludivers.kz_survivor.menus.advanced.MultiComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.components.EditableListComponent
 import net.kyori.adventure.text.Component
@@ -17,20 +18,20 @@ import kotlin.reflect.full.memberProperties
 interface UserEditable {
     fun triggerEdition()
     fun fetchIcon(): CustomIconBuild
-    fun getMenuComponent(): MenuComponent {
+    fun getMenuComponent(): com.cludivers.kz_survivor.menus.Component {
         return getMenuComponent(this)
     }
 
-    fun fetchPreviewComponent(): SingleMenuComponent {
-        return SingleMenuComponent(fetchIcon()) { p -> MenuDisplayer(p.player, "", getMenuComponent(this)).open(SurvivorMenuHandler::registerMenu) }
+    fun fetchPreviewComponent(): UnitComponent {
+        return UnitComponent(fetchIcon()) { p -> MenuDisplayer(p.player, "", getMenuComponent(this)).open(SurvivorMenuHandler::registerMenu) }
     }
 
     companion object {
 
 
 
-        fun getMenuComponent(instance: Any?): MenuComponent {
-            if (instance == null) return SingleMenuComponent.EMPTY
+        fun getMenuComponent(instance: Any?): com.cludivers.kz_survivor.menus.Component {
+            if (instance == null) return UnitComponent.EMPTY
             val componentBuilder = DisplayModes.PREFER_FULL_DISPLAY.classMenusBuilders[instance::class]
             if (componentBuilder != null) {
                 return componentBuilder(instance)
@@ -45,7 +46,7 @@ interface UserEditable {
             return clazz.memberProperties.filter { it.hasAnnotation<EditableAttribute>() }
         }
 
-        fun collectMenuItems(clazz: KClass<out Any>): List<(Any) -> MenuComponent> {
+        fun collectMenuItems(clazz: KClass<out Any>): List<(Any) -> com.cludivers.kz_survivor.menus.Component> {
             return collectMenuFields(clazz).map {
                 when(it.findAnnotation<EditableAttribute>()?.displayMode) {
                     DisplayModes.PREFER_FULL_DISPLAY -> { parentInstance: Any ->
@@ -55,42 +56,42 @@ interface UserEditable {
             }
         }
 
-        fun getMenuComponentBuilder(clazz: KClass<out Any>): (Any) -> MenuComponent {
+        fun getMenuComponentBuilder(clazz: KClass<out Any>): (Any) -> com.cludivers.kz_survivor.menus.Component {
             Bukkit.broadcast(Component.text("${clazz.simpleName}"))
 
             return if (clazz.isSubclassOf(UserEditable::class)) {
                 val clazzItems = collectMenuItems(clazz)
                 // Maybe augment it with instance based stuff?
                 // Function like (instance.fillExtraComponent(Map<Int, MenuComponent>)) ?
-                return { instance: Any -> MultiMenuComponent(clazzItems.map { it(instance) }) }
+                return { instance: Any -> MultiComponent(clazzItems.map { it(instance) }) }
             } else {
                 buildAttributeMenuComponent(clazz)
             }
         }
 
         @Suppress("UNCHECKED_CAST")
-        private fun buildAttributeMenuComponent(clazz: KClass<out Any>): (Any) -> MenuComponent {
+        private fun buildAttributeMenuComponent(clazz: KClass<out Any>): (Any) -> com.cludivers.kz_survivor.menus.Component {
             Bukkit.broadcast(Component.text("Building component of ${clazz.simpleName}"))
             return when (clazz) {
                 List::class, ArrayList::class ->
                     { instance -> EditableListComponent(instance as List<Any>) }
-                Int::class -> { _ -> SingleMenuComponent(CustomIconBuild(clazz.simpleName!!, Material.BRICK_WALL)) {} }
-                else -> { _ -> SingleMenuComponent.EMPTY }
+                Int::class -> { _ -> UnitComponent(CustomIconBuild(clazz.simpleName!!, Material.BRICK_WALL)) {} }
+                else -> { _ -> UnitComponent.EMPTY }
             }
         }
 
-        fun fetchPreviewComponent(instance: Any?): SingleMenuComponent {
+        fun fetchPreviewComponent(instance: Any?): UnitComponent {
             Bukkit.broadcast(Component.text("Fetching preview component of ${instance?.javaClass?.name ?: "class"}"))
-            if (instance == null) return SingleMenuComponent.EMPTY
+            if (instance == null) return UnitComponent.EMPTY
             if (instance is UserEditable) {
                 return instance.fetchPreviewComponent()
             }
             return when (instance::class) {
-                List::class, ArrayList::class -> SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.STONE))
+                List::class, ArrayList::class -> UnitComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.STONE))
                 { p -> MenuDisplayer(p.player, "", getMenuComponent(instance)).open(SurvivorMenuHandler::registerMenu)  }
                 Int::class -> {
                     val name: String = (instance as? KProperty<*>)?.name ?: "property"
-                    SingleMenuComponent(
+                    UnitComponent(
                         CustomIconBuild(
                             "Edit $name",
                             Material.BRICK_WALL
@@ -98,16 +99,16 @@ interface UserEditable {
                     ) { p -> p.player.sendMessage(Component.text("Type the new amount :D (not wired yet)")) }
                 }
                 Material::class -> {
-                    SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", instance as Material)) {
+                    UnitComponent(CustomIconBuild("Edit ${instance::class.simpleName}", instance as Material)) {
                         p -> p.player.sendMessage(Component.text("Drop the replacing material (not wired yet)"))
                     }
                 }
                 String::class -> {
-                    SingleMenuComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.NAME_TAG)) {
+                    UnitComponent(CustomIconBuild("Edit ${instance::class.simpleName}", Material.NAME_TAG)) {
                             p -> p.player.sendMessage(Component.text("Type the new name (not wired yet)"))
                     }
                 }
-                else -> SingleMenuComponent.EMPTY
+                else -> UnitComponent.EMPTY
             }
         }
     }
