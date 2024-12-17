@@ -18,6 +18,9 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
     private var currentPageIndex = 0
     private var maxPageIndex = 0
 
+    /*
+    * Not tested :)
+    * */
     fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
 
         if (mainComponent !is MultiComponent) { return }
@@ -26,7 +29,8 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
 
         val firstInventory = inventories[0]
 
-
+        // 5 rows of inventory size, times the cumulative current inventory index
+        inventoryFiller(mainComponent.iterator())
 
         inventoryAdder(this, firstInventory)
 
@@ -45,6 +49,21 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
 
     }
 
+    /*
+    * Not tested :)
+    * */
+    private fun inventoryFiller(content: Iterator<InMenuComponent>): Sequence<Inventory> = sequence {
+        while (content.hasNext()) {
+            val it = content.next()
+            if (it.index <= (5 * 9 - 1) * (currentPageIndex + 1)) {
+                yield(inventories[currentPageIndex])
+                inventories.add(Bukkit.createInventory(player, 54, Component.text("$name [page: ${currentPageIndex}]")))
+                it.withOffset(-5 * 9 * (currentPageIndex + 1)).insert(inventories[currentPageIndex + 1])
+            }
+            it.insert(inventories[currentPageIndex])
+        }
+    }
+
     private fun fillInfiniteInventory(content: Map<Int, CustomIconBuild>) {
 
         content.forEach { (key, value) ->
@@ -57,14 +76,6 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
         }
     }
 
-    private fun fillBasicInventory(content: Map<Int, CustomIconBuild>, size: Int){
-        if (inventory == null){
-            inventory = Bukkit.createInventory(player, size, Component.text(name))
-        }
-
-        content.forEach { inventory!!.setItem(it.key, it.value.buildItemStack()) }
-
-    }
 
     fun close() {
         mainComponent.close()

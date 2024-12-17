@@ -31,6 +31,9 @@ open class MultiComponent(
         return allowPickingItem
     }
 
+    /*
+    * Not tested :)
+    * */
     override fun iterator(): Iterator<InMenuComponent> {
         return sequence {
             var currentOffset = 0
