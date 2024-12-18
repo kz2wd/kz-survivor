@@ -3,11 +3,11 @@ package com.cludivers.kz_survivor.menus.paginated
 import com.cludivers.kz_survivor.menus.Component
 import com.cludivers.kz_survivor.menus.InMenuComponent
 import com.cludivers.kz_survivor.menus.OnClickParameter
-import com.cludivers.kz_survivor.menus.advanced.MultiComponent
+import com.cludivers.kz_survivor.menus.advanced.ComponentList
 import org.bukkit.inventory.Inventory
 
 
-class Paginator(private val component: MultiComponent, private val inventory: Inventory): Component(false, false) {
+class Paginator(private val component: ComponentList, private val inventory: Inventory): Component(false, false) {
     private val pages: MutableList<Page> = mutableListOf()
 
     private val pageSequence: Iterator<Page>
@@ -58,7 +58,7 @@ class Paginator(private val component: MultiComponent, private val inventory: In
         while (content.hasNext()) {
             val it = content.next()
             if (it.index <= (5 * 9 - 1) * (currentPageIndex + 1)) {
-                currentPage.add(it)
+                currentPage.add(it.withOffset(-5 * 9 * currentPageIndex))
             } else {
                 yield(Page(currentPage))
                 currentPage.clear()

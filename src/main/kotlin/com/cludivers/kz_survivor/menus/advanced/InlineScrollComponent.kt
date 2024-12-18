@@ -1,27 +1,35 @@
 package com.cludivers.kz_survivor.menus.advanced
 
-import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.InMenuComponent
 import com.cludivers.kz_survivor.menus.OnClickParameter
 import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import org.bukkit.Material
 
-class InlineScrollComponent(private val items: List<UnitComponent>, private val amountOfItemShown: Int, allowPickingItem: Boolean = false, forceNewLine: Boolean = false) : Component(
+class InlineScrollComponent(private val items: List<UnitComponent>, private val amountOfItemShown: Int,
+                            allowPickingItem: Boolean = false, forceNewLine: Boolean = false) : MultiComponent(
     forceNewLine, allowPickingItem
 ) {
 
     private var currentIndex = 0
 
-    override fun getContent(): Map<Int, CustomIconBuild> {
-        return mutableMapOf(
-            0 to LEFT_ARROW,
-            amountOfItemShown + 1 to RIGHT_ARROW,
-        ) + items.take(amountOfItemShown).mapIndexed {i, it -> i + 1 + currentIndex to it.icon}.toMap()
+    override fun iterator(): Iterator<InMenuComponent> {
+        return sequence {
+            yield(InMenuComponent(0, LEFT_SCROLLER))
+            // TODO ADD SUPPORT FOR INDEX
+            items.take(amountOfItemShown).forEachIndexed { i, it -> yield(InMenuComponent(i + 1, it)) }
+            yield(InMenuComponent(amountOfItemShown + 1, RIGHT_SCROLLER))
+
+        }.iterator()
     }
+
+    private val LEFT_SCROLLER = UnitComponent(LEFT_ARROW, false) { currentIndex -= 1 }
+    val RIGHT_SCROLLER = UnitComponent(RIGHT_ARROW, false) { currentIndex += 1 }
+
 
     override fun onClick(p: OnClickParameter): Boolean {
         when(p.index) {
-            0 -> { currentIndex -= 1 }
+            0 -> {  }
             amountOfItemShown + 1 -> { currentIndex += 1 }
             else -> { items.getOrNull(p.index + currentIndex)?.onClick(p.withIndex(0)) }
         }

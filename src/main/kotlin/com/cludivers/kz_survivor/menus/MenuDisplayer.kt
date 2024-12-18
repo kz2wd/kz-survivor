@@ -2,7 +2,7 @@ package com.cludivers.kz_survivor.menus
 
 import com.cludivers.kz_survivor.menus.Component as menusComponent
 import com.cludivers.kz_survivor.KzSurvivor.Companion.plugin
-import com.cludivers.kz_survivor.menus.advanced.MultiComponent
+import com.cludivers.kz_survivor.menus.advanced.ComponentList
 import com.cludivers.kz_survivor.menus.paginated.Paginator
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -25,7 +25,7 @@ class MenuDisplayer(
     * */
     fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
 
-        if (mainComponent !is MultiComponent) return
+        if (mainComponent !is ComponentList) return
 
         paginator = Paginator(mainComponent, inventory)
 
