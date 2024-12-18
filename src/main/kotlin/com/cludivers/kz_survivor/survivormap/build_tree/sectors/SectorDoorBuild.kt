@@ -33,7 +33,7 @@ class SectorDoorBuild: SBuildable() {
         TODO("Not yet implemented")
     }
 
-    override fun getFinalSPlayable(): SPlayable {
+    override fun fetchFinalSPlayable(): SPlayable {
         TODO("Not yet implemented")
     }
 

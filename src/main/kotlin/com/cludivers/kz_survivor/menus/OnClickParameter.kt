@@ -7,6 +7,10 @@ data class OnClickParameter(val player: Player, var index: Int) {
         index = newIndex
         return this
     }
+    fun withOffset(offset: Int): OnClickParameter {
+        index += offset
+        return this
+    }
 }
 
 

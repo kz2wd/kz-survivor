@@ -18,7 +18,7 @@ import kotlin.reflect.full.memberProperties
 interface UserEditable {
     fun triggerEdition()
     fun fetchIcon(): CustomIconBuild
-    fun getMenuComponent(): com.cludivers.kz_survivor.menus.Component {
+    fun fetchMenuComponent(): com.cludivers.kz_survivor.menus.Component {
         return getMenuComponent(this)
     }
 

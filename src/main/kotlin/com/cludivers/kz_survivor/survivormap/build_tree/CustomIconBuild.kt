@@ -1,6 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
-import com.cludivers.kz_survivor.menus.Component
+import com.cludivers.kz_survivor.menus.Component as MenuComponent
 import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
 import com.cludivers.kz_survivor.survivormap.play_tree.SPlayable
@@ -26,7 +26,7 @@ class CustomIconBuild(@EditableAttribute var name: String, @EditableAttribute va
         TODO("Not yet implemented")
     }
 
-    override fun getFinalSPlayable(): SPlayable {
+    override fun fetchFinalSPlayable(): SPlayable {
         TODO("Not yet implemented")
     }
 
@@ -35,7 +35,7 @@ class CustomIconBuild(@EditableAttribute var name: String, @EditableAttribute va
         return this
     }
 
-    override fun getMenuComponent(): com.cludivers.kz_survivor.menus.Component {
+    override fun fetchMenuComponent(): MenuComponent {
         return UnitComponent(this) {}
     }
 

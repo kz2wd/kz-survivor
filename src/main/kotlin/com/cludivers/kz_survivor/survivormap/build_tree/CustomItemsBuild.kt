@@ -24,7 +24,7 @@ class CustomItemsBuild: SBuildable() {
         TODO("Not yet implemented")
     }
 
-    override fun getFinalSPlayable(): SPlayable {
+    override fun fetchFinalSPlayable(): SPlayable {
         TODO("Not yet implemented")
     }
 
@@ -32,7 +32,7 @@ class CustomItemsBuild: SBuildable() {
         return icon
     }
 
-    override fun getMenuComponent(): Component {
+    override fun fetchMenuComponent(): Component {
         TODO("Not yet implemented")
     }
 }

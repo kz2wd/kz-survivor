@@ -33,7 +33,7 @@ class WaveBuild: SBuildable() {
         TODO("Not yet implemented")
     }
 
-    override fun getFinalSPlayable(): SPlayable {
+    override fun fetchFinalSPlayable(): SPlayable {
         TODO("Not yet implemented")
     }
 
@@ -41,7 +41,7 @@ class WaveBuild: SBuildable() {
         return icon
     }
 
-    override fun getMenuComponent(): Component {
+    override fun fetchMenuComponent(): Component {
         TODO("Not yet implemented")
     }
 }

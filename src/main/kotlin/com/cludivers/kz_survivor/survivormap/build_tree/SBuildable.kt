@@ -45,7 +45,7 @@ abstract class SBuildable: UserEditable {
         return splayable!!
     }
 
-    abstract fun getFinalSPlayable(): SPlayable
+    abstract fun fetchFinalSPlayable(): SPlayable
 
     override fun triggerEdition() {
         TODO("Not yet implemented")

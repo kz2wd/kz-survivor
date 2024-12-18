@@ -61,7 +61,7 @@ class SurvivorMapBuild: SBuildable() {
         TODO("Not yet implemented")
     }
 
-    override fun getFinalSPlayable(): SPlayable {
+    override fun fetchFinalSPlayable(): SPlayable {
         TODO("Not yet implemented")
     }
 
@@ -69,7 +69,7 @@ class SurvivorMapBuild: SBuildable() {
         return icon
     }
 
-    override fun getMenuComponent(): Component {
+    override fun fetchMenuComponent(): Component {
         val content = mutableMapOf<Int, Component>(
             0 to UnitComponent(icon) {},
         )
