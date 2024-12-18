@@ -12,7 +12,12 @@ import org.bukkit.event.inventory.InventoryInteractEvent
 import org.bukkit.inventory.Inventory
 
 
-class MenuDisplayer(private val player: Player, private val name: String, private val mainComponent: menusComponent, val allowShiftClick: Boolean = false) {
+class MenuDisplayer(
+    private val player: Player,
+    private val name: String,
+    private val mainComponent: menusComponent,
+    val allowShiftClick: Boolean = false
+) {
     private var inventories: MutableList<Inventory> = mutableListOf()
 
     private var currentPageIndex = 0
@@ -23,21 +28,19 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
     * */
     fun open(inventoryAdder: (MenuDisplayer, Inventory) -> Unit, delay: Boolean = true) {
 
-        if (mainComponent !is MultiComponent) { return }
-
-        inventories.add(Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]")))
-
-        val firstInventory = inventories[0]
+        if (mainComponent !is MultiComponent) return
 
         // 5 rows of inventory size, times the cumulative current inventory index
-        inventoryFiller(mainComponent.iterator())
+        val inventoryGenerator = inventoryFiller(mainComponent.iterator()).iterator()
+        if (!inventoryGenerator.hasNext()) return
+
+        val firstInventory = inventoryGenerator.next()
 
         inventoryAdder(this, firstInventory)
 
-
         // Delay because some events will trigger menu opening, and some need it to be delayed
         // so default behavior is to delay to ensure no issues occur
-        if (!delay){
+        if (!delay) {
             player.closeInventory()
             player.openInventory(firstInventory)
         } else {
@@ -53,6 +56,7 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
     * Not tested :)
     * */
     private fun inventoryFiller(content: Iterator<InMenuComponent>): Sequence<Inventory> = sequence {
+        inventories.add(Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]")))
         while (content.hasNext()) {
             val it = content.next()
             if (it.index <= (5 * 9 - 1) * (currentPageIndex + 1)) {
@@ -64,16 +68,15 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
         }
     }
 
-    private fun fillInfiniteInventory(content: Map<Int, CustomIconBuild>) {
+    fun scrollLeft() {
+        if (currentPageIndex <= 0) return
+        currentPageIndex--
+        inventories[currentPageIndex]
 
-        content.forEach { (key, value) ->
-            val index = key / 45
-            val currentInventory: Inventory = inventories.getOrNull(index) ?: run {
-                inventories[index] = Bukkit.createInventory(player, 54, Component.text("$name [page: ${index}]"))
-                inventories[index]
-            }
-            currentInventory.setItem(key, value.buildItemStack())
-        }
+    }
+
+    fun scrollRight() {
+        currentPageIndex++
     }
 
 
@@ -86,8 +89,25 @@ class MenuDisplayer(private val player: Player, private val name: String, privat
     }
 
     fun onClick(index: Int, event: InventoryInteractEvent) {
-        val isItemPickingAllowed = mainComponent.onClick(OnClickParameter(event.whoClicked as Player, index))
-        if (!isItemPickingAllowed) { event.isCancelled = true }
+        when (index) {
+            in 0..<5 * 9 -> {
+                val isItemPickingAllowed = mainComponent.onClick(OnClickParameter(event.whoClicked as Player, index))
+                if (!isItemPickingAllowed) {
+                    event.isCancelled = true
+                }
+                return
+            }
+            // Scroll left
+            5 * 9 -> {
+                // Open left menu
+
+            }
+            // Scroll right
+            6 * 9 - 1 -> {
+                // Open right menu
+            }
+        }
+        event.isCancelled = true
     }
 
 }
