@@ -6,7 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level.INFO
 import java.util.logging.Logger
 
-class KzSurvivor : JavaPlugin() {
+open class KzSurvivor : JavaPlugin() {
     companion object {
         lateinit var plugin: JavaPlugin
     }
