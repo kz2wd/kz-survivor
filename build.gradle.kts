@@ -22,7 +22,6 @@ repositories {
 }
 
 dependencies {
-    implementation("net.kyori:adventure-api:4.15.0")
     compileOnly("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.google.dagger:dagger-compiler:2.51.1")
@@ -76,6 +75,7 @@ fun handleMissingProperty(propertyName: String, file: String?, isMissingCritical
     } else {
         logger.warn(errorMessage)
     }
+
 }
 
 
