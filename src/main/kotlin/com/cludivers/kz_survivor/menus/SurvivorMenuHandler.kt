@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack
 
 object SurvivorMenuHandler : Listener {
 
-    private val mainMenuOpening: ItemStack = ItemStack(Material.STICK)
+    val mainMenuOpening: ItemStack = ItemStack(Material.STICK)
 
     private val allInventoryMenus = HashMap<Inventory, MenuDisplayer>()
 
