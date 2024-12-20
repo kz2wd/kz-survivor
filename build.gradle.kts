@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.20-RC")
 
     testImplementation(kotlin("test"))
+    testImplementation("org.slf4j:slf4j-simple:2.0.9")
     testImplementation("io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT")
     testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.0.0")
 }
@@ -106,35 +107,35 @@ tasks.register<Copy>("deployPlugin") {
         println("Jar deployed to: $serverDir/plugins/")
     }
 }
-
-tasks.register<JavaExec>("startServer") {
-    description = "Start the server"
-
-    val serverDir = getServerDirectory()
-    val serverJar = getServerJar()
-
-    val launchCommand = "java -jar $serverDir/$serverJar"
-
-    val process = ProcessBuilder(launchCommand)
-        .directory(File(serverDir))
-        .start()
-
-    // Optionally provide input to the process
-//    if (project.hasProperty("reload")) {
-//        process.outputStream.bufferedWriter().use { it.write(reloadCommand) }
+//
+//tasks.register<JavaExec>("startServer") {
+//    description = "Start the server"
+//
+//    val serverDir = getServerDirectory()
+//    val serverJar = getServerJar()
+//
+//    val launchCommand = "java -jar $serverDir/$serverJar"
+//
+//    val process = ProcessBuilder(launchCommand)
+//        .directory(File(serverDir))
+//        .start()
+//
+//    // Optionally provide input to the process
+////    if (project.hasProperty("reload")) {
+////        process.outputStream.bufferedWriter().use { it.write(reloadCommand) }
+////    }
+//
+//    val exitCode = process.waitFor()
+//    if (exitCode == 0) {
+//        println("Server reloaded/relaunched successfully.")
+//    } else {
+//        println("Failed to reload/relaunch server. Exit code: $exitCode")
 //    }
-
-    val exitCode = process.waitFor()
-    if (exitCode == 0) {
-        println("Server reloaded/relaunched successfully.")
-    } else {
-        println("Failed to reload/relaunch server. Exit code: $exitCode")
-    }
-
-//    main = "-jar"
-    classpath = files("$serverDir/$serverJar")
-
-}
+//
+////    main = "-jar"
+//    classpath = files("$serverDir/$serverJar")
+//
+//}
 val shadowJarFileName = "kzSurvivor.jar"
 tasks.withType<ShadowJar> {
     archiveFileName.set(shadowJarFileName)
@@ -142,6 +143,9 @@ tasks.withType<ShadowJar> {
 
 tasks.test {
     useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
 }
 
 
