@@ -8,8 +8,10 @@ import java.util.logging.Logger
 
 open class KzSurvivor : JavaPlugin() {
     companion object {
-        lateinit var plugin: JavaPlugin
+        lateinit var plugin: KzSurvivor
     }
+
+    var isUnitTestMode: Boolean = false
 
     override fun onEnable() {
         // Plugin startup logic

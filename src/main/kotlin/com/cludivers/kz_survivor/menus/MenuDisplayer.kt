@@ -15,9 +15,10 @@ class MenuDisplayer(
     private val player: Player,
     private val name: String,
     private val mainComponent: menusComponent,
-    val allowShiftClick: Boolean = false
-) {
+    val allowShiftClick: Boolean = false,
     private val inventory: Inventory = Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]"))
+) {
+
     private lateinit var paginator: Paginator
 
     /*

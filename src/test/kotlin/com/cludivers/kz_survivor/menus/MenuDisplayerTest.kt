@@ -2,20 +2,21 @@ package com.cludivers.kz_survivor.menus
 
 import com.cludivers.kz_survivor.KzSurvivor
 import com.cludivers.kz_survivor.menus.advanced.ComponentList
-import com.cludivers.kz_survivor.menus.paginated.Paginator
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.SurvivorMapBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.event.inventory.InventoryOpenEvent
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.mockbukkit.mockbukkit.MockBukkit
 import org.mockbukkit.mockbukkit.ServerMock
 import org.mockbukkit.mockbukkit.entity.PlayerMock
-import org.mockbukkit.mockbukkit.simulate.entity.PlayerSimulation
+import org.mockbukkit.mockbukkit.exception.UnimplementedOperationException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class MenuDisplayerTest {
     private lateinit var world: World
@@ -25,6 +26,7 @@ class MenuDisplayerTest {
     fun setUp() {
         mock= MockBukkit.mock()
         val plugin = MockBukkit.load(KzSurvivor::class.java)
+        plugin.isUnitTestMode = true
         world = mock.addSimpleWorld("test")
 
     }
@@ -35,14 +37,19 @@ class MenuDisplayerTest {
     }
 
     @Test
-    fun test() {
+    fun openMenuLauncher(){
+        try {
+            openMenuTest()
+        } catch(e: UnimplementedOperationException){
+            e.printStackTrace()
+        }
+    }
 
+    private fun openMenuTest() {
 
         val player: PlayerMock = mock.addPlayer()
         player.setItemInHand(SurvivorMenuHandler.mainMenuOpening)
 
-        val playerSimulation = PlayerSimulation(player)
-        val map = SurvivorMapBuild()
         val unitCompoList: List<CustomIconBuild> = listOf(
             CustomIconBuild("1", Material.ARROW),
             CustomIconBuild("2", Material.ARROW),
@@ -56,15 +63,37 @@ class MenuDisplayerTest {
             assertEquals(icon, inMenu.component.icon)
         }
         val inventory = mock.createInventory(player, 54)
-        val paginator = Paginator(component, inventory)
 
-        paginator.
+        val displayer = MenuDisplayer(player,  "Map Editor Menu test", component, inventory = inventory)
+        displayer.open(SurvivorMenuHandler::registerMenu, false)
+        mock.pluginManager.assertEventFired(InventoryOpenEvent::class.java)
 
-        assert(false)
+        assertNotEquals(0, player.openInventory.topInventory.contents.filterNotNull().size)
 
-//        val displayer = MenuDisplayer(player,  "Map Editor Menu test", component)
+    }
 
-//        mock.pluginManager.assertEventFired(InventoryOpenEvent::class.java)
+    @Test
+    fun mapMenuLauncher(){
+        try {
+            mapMenuTest()
+        } catch(e: UnimplementedOperationException){
+            e.printStackTrace()
+        }
+    }
 
+    private fun mapMenuTest(){
+
+        val player: PlayerMock = mock.addPlayer()
+        player.setItemInHand(SurvivorMenuHandler.mainMenuOpening)
+
+        val map = SurvivorMapBuild()
+
+        val inventory = mock.createInventory(player, 54)
+
+        val displayer = MenuDisplayer(player,  "Map Editor Menu test",  UserEditable.getMenuComponent(map), inventory = inventory)
+        displayer.open(SurvivorMenuHandler::registerMenu, false)
+        mock.pluginManager.assertEventFired(InventoryOpenEvent::class.java)
+
+        assertNotEquals(0, player.openInventory.topInventory.contents.filterNotNull().size)
     }
 }

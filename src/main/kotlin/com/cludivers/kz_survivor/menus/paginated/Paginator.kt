@@ -10,12 +10,14 @@ import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 
 
-class Paginator(private val component: ComponentList, private val inventory: Inventory): Component(false, false) {
+class Paginator(component: ComponentList, private val inventory: Inventory): Component(false, false) {
     private val pages: MutableList<Page> = mutableListOf()
 
     private val pageSequence: Iterator<Page>
     init {
         pageSequence = pageGenerator(component.iterator()).iterator()
+
+        tryMoveToPage(0)
     }
 
     private var currentPageIndex = 0
@@ -34,6 +36,7 @@ class Paginator(private val component: ComponentList, private val inventory: Inv
             currentPageIndex += offset  //  we need increment ONLY IF getPage succeed
         } catch (_: IndexOutOfBoundsException) {
             // ignored
+            println("Page $currentPageIndex out of bounds")
         }
     }
 
@@ -70,6 +73,7 @@ class Paginator(private val component: ComponentList, private val inventory: Inv
                 currentPage.add(it.withOffset(-PAGE_SIZE * (currentPageIndex + 1)))
             }
         }
+        yield(Page(currentPage))
     }
 
     override fun onClick(p: OnClickParameter): Boolean {

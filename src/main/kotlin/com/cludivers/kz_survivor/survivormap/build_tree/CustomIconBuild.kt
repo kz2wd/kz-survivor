@@ -1,5 +1,6 @@
 package com.cludivers.kz_survivor.survivormap.build_tree
 
+import com.cludivers.kz_survivor.KzSurvivor
 import com.cludivers.kz_survivor.menus.Component as MenuComponent
 import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.EditableAttribute
@@ -39,8 +40,10 @@ class CustomIconBuild(@EditableAttribute var name: String, @EditableAttribute va
         return UnitComponent(this) {}
     }
 
-    fun buildItemStack(): ItemStack{
+    fun buildItemStack(): ItemStack {
         val item = ItemStack.of(icon)
+        // Have to do this because of unimplemented methods
+        if (KzSurvivor.plugin.isUnitTestMode) return item
         item.editMeta { it.itemName(Component.text(name)) }
         item.editMeta { it.lore(mutableListOf(Component.text(description))) }
         return item
