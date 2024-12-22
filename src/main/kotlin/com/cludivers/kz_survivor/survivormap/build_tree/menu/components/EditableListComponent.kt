@@ -2,7 +2,6 @@ package com.cludivers.kz_survivor.survivormap.build_tree.menu.components
 
 import com.cludivers.kz_survivor.menus.advanced.InlineScrollComponent
 import com.cludivers.kz_survivor.menus.Component
-import com.cludivers.kz_survivor.menus.advanced.ComponentList
 import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.menus.advanced.MultiComponent
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
@@ -19,7 +18,7 @@ abstract class EditableListComponent(attribute: List<Any>, newLine: Boolean = tr
         fun fromAttribute(value: List<Any>): Map<Int, Component> {
             return mapOf(
                 0 to UnitComponent(CustomIconBuild("Add new section", Material.BRICK_WALL)) {},
-                1 to InlineScrollComponent(value.map { UserEditable.fetchPreviewComponent(it) }, 6)
+
             )
 
         }

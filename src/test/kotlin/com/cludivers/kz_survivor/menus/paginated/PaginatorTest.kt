@@ -1,7 +1,6 @@
 package com.cludivers.kz_survivor.menus.paginated
 
 import com.cludivers.kz_survivor.KzSurvivor
-import com.cludivers.kz_survivor.menus.Component
 import com.cludivers.kz_survivor.menus.OnClickParameter
 import com.cludivers.kz_survivor.menus.advanced.ComponentList
 import com.cludivers.kz_survivor.survivormap.build_tree.SurvivorMapBuild
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.mockbukkit.mockbukkit.MockBukkit
 import org.mockbukkit.mockbukkit.ServerMock
 import org.mockbukkit.mockbukkit.exception.UnimplementedOperationException
-import org.mockbukkit.mockbukkit.simulate.entity.PlayerSimulation
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

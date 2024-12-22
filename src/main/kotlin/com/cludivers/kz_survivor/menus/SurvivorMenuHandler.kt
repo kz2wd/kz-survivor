@@ -4,7 +4,6 @@ import com.cludivers.kz_survivor.survivormap.build_tree.SurvivorMapBuild
 import com.cludivers.kz_survivor.survivormap.build_tree.menu.UserEditable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
