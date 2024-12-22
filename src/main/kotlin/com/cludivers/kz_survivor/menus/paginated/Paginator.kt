@@ -59,7 +59,7 @@ class Paginator(component: ComponentList, private val inventory: Inventory): Com
     /*
     * Not tested :)
     * */
-    private fun pageGenerator(content: Iterator<InMenuComponent>): Sequence<Page> = sequence {
+    fun pageGenerator(content: Iterator<InMenuComponent>): Sequence<Page> = sequence {
         val currentPage: MutableList<InMenuComponent> = mutableListOf()
         while (content.hasNext()) {
             val it = content.next()

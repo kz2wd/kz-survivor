@@ -28,8 +28,6 @@ interface UserEditable {
 
     companion object {
 
-
-
         fun getMenuComponent(instance: Any?): com.cludivers.kz_survivor.menus.Component {
             if (instance == null) return UnitComponent.EMPTY
             val componentBuilder = DisplayModes.PREFER_FULL_DISPLAY.classMenusBuilders[instance::class]
@@ -57,8 +55,7 @@ interface UserEditable {
         }
 
         fun getMenuComponentBuilder(clazz: KClass<out Any>): (Any) -> com.cludivers.kz_survivor.menus.Component {
-            Bukkit.broadcast(Component.text("${clazz.simpleName}"))
-
+//            Bukkit.broadcast(Component.text("${clazz.simpleName}"))
             return if (clazz.isSubclassOf(UserEditable::class)) {
                 val clazzItems = collectMenuItems(clazz)
                 // Maybe augment it with instance based stuff?
@@ -71,7 +68,7 @@ interface UserEditable {
 
         @Suppress("UNCHECKED_CAST")
         private fun buildAttributeMenuComponent(clazz: KClass<out Any>): (Any) -> com.cludivers.kz_survivor.menus.Component {
-            Bukkit.broadcast(Component.text("Building component of ${clazz.simpleName}"))
+//            Bukkit.broadcast(Component.text("Building component of ${clazz.simpleName}"))
             return when (clazz) {
                 List::class, ArrayList::class ->
                     { instance -> UnitComponent.EMPTY } //EditableListComponent(instance as List<Any>) }
@@ -81,7 +78,7 @@ interface UserEditable {
         }
 
         fun fetchPreviewComponent(instance: Any?): UnitComponent {
-            Bukkit.broadcast(Component.text("Fetching preview component of ${instance?.javaClass?.name ?: "class"}"))
+//            Bukkit.broadcast(Component.text("Fetching preview component of ${instance?.javaClass?.name ?: "class"}"))
             if (instance == null) return UnitComponent.EMPTY
             if (instance is UserEditable) {
                 return instance.fetchPreviewComponent()

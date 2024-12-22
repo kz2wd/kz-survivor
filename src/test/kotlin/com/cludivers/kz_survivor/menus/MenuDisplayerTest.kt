@@ -89,11 +89,17 @@ class MenuDisplayerTest {
         val map = SurvivorMapBuild()
 
         val inventory = mock.createInventory(player, 54)
-
-        val displayer = MenuDisplayer(player,  "Map Editor Menu test",  UserEditable.getMenuComponent(map), inventory = inventory)
+        val mapComponent = UserEditable.getMenuComponent(map) as ComponentList
+        val displayer = MenuDisplayer(player,  "Map Editor Menu test", mapComponent, inventory = inventory)
         displayer.open(SurvivorMenuHandler::registerMenu, false)
         mock.pluginManager.assertEventFired(InventoryOpenEvent::class.java)
 
         assertNotEquals(0, player.openInventory.topInventory.contents.filterNotNull().size)
+
+        mapComponent.iterator().asSequence().toList().forEach {
+            val itemstack = player.openInventory.getItem(it.index)
+            assertEquals(it.component.icon.buildItemStack(), itemstack)
+        }
+
     }
 }

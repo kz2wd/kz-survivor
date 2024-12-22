@@ -6,9 +6,9 @@ import com.cludivers.kz_survivor.menus.OnClickParameter
 import org.bukkit.inventory.Inventory
 
 
-class Page(private val components: List<InMenuComponent>): Component(false, false) {
+class Page(val components: List<InMenuComponent>): Component(false, false) {
 
-    private val componentMap: Map<Int, Component> = components.associate { Pair(it.index, it.component) }
+    val componentMap: Map<Int, Component> = components.associate { Pair(it.index, it.component) }
 
     fun apply(inventory: Inventory) {
         components.forEach {
