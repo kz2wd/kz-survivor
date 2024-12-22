@@ -1,5 +1,6 @@
 package com.cludivers.kz_survivor.menus
 
+import com.cludivers.kz_survivor.KzSurvivor
 import com.cludivers.kz_survivor.menus.Component as menusComponent
 import com.cludivers.kz_survivor.KzSurvivor.Companion.plugin
 import com.cludivers.kz_survivor.menus.advanced.ComponentList
@@ -16,7 +17,11 @@ class MenuDisplayer(
     private val name: String,
     private val mainComponent: menusComponent,
     val allowShiftClick: Boolean = false,
-    private val inventory: Inventory = Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]"))
+    private val inventory: Inventory = if (plugin.isUnitTestMode) {
+        plugin.mockInventoryGetter(player, 54)
+    } else {
+        Bukkit.createInventory(player, 54, Component.text("$name [page: ${0}]"))
+    }
 ) {
 
     private lateinit var paginator: Paginator

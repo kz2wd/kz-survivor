@@ -3,6 +3,7 @@ package com.cludivers.kz_survivor.menus.paginated
 import com.cludivers.kz_survivor.menus.Component
 import com.cludivers.kz_survivor.menus.InMenuComponent
 import com.cludivers.kz_survivor.menus.OnClickParameter
+import org.bukkit.Bukkit
 import org.bukkit.inventory.Inventory
 
 

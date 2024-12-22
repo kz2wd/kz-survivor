@@ -6,12 +6,13 @@ import com.cludivers.kz_survivor.menus.OnClickParameter
 import com.cludivers.kz_survivor.menus.UnitComponent
 import com.cludivers.kz_survivor.menus.advanced.ComponentList
 import com.cludivers.kz_survivor.survivormap.build_tree.CustomIconBuild
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.Inventory
 
 
 class Paginator(component: ComponentList, private val inventory: Inventory): Component(false, false) {
-    private val pages: MutableList<Page> = mutableListOf()
+    val pages: MutableList<Page> = mutableListOf()
 
     private val pageSequence: Iterator<Page>
     init {
@@ -43,8 +44,12 @@ class Paginator(component: ComponentList, private val inventory: Inventory): Com
     private fun getPage(index: Int): Page {
         return when {
             index < 0 -> throw IndexOutOfBoundsException()
-            index > pages.lastIndex -> tryGenerate()
-            else ->  pages[index]
+            index > pages.lastIndex -> {
+                val page = tryGenerate()
+                pages.add(page)
+                page
+            }
+            else -> pages[index]
         }
     }
 
@@ -77,8 +82,12 @@ class Paginator(component: ComponentList, private val inventory: Inventory): Com
     }
 
     override fun onClick(p: OnClickParameter): Boolean {
-        val page = getPage(currentPageIndex)
-        return page.onClick(p)
+        try {
+            val page = getPage(currentPageIndex)
+            return page.onClick(p)
+        } catch (_: IndexOutOfBoundsException) {
+            return false
+        }
     }
 
     companion object {
