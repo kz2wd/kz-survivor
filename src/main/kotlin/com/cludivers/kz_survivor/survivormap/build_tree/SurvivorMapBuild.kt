@@ -28,25 +28,25 @@ class SurvivorMapBuild: SBuildable() {
     @ElementCollection
     var maxMapElements: MutableMap<Class<*>, Int> = mutableMapOf()
 
-//    @EditableAttribute
+    @EditableAttribute
     var maxPlayers: Int = DEFAULT_MAX_PLAYERS
 
-//    @EditableAttribute
+    @EditableAttribute
     var icon: CustomIconBuild = CustomIconBuild("SurvivorMapNameHere", Material.COMPASS)
 
     @OneToOne
     var world: SurvivorWorld = SurvivorWorld()
 
     @OneToOne
-//    @EditableAttribute
+    @EditableAttribute
     var openingSection: MapSectorBuild = MapSectorBuild()
 
     @OneToMany
-//    @EditableAttribute(displayMode = DisplayModes.PREFER_FULL_DISPLAY)
+    @EditableAttribute(displayMode = DisplayModes.PREFER_FULL_DISPLAY)
     var sectors: MutableList<MapSectorBuild> = mutableListOf()
 
     @OneToOne
-//    @EditableAttribute
+    @EditableAttribute
     var waveManager: WaveManagerBuild = WaveManagerBuild()
 
     override fun fetchName(): String {
